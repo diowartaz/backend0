@@ -1,0 +1,10 @@
+https://www.youtube.com/watch?v=bvSY0B1DpW0
+swagger https://www.youtube.com/watch?v=S8kmHtQeflo
+
+Authorization: Bearer {token}
+
+
+but:
+authentification propre (sans recuperation de mot de passe)
+menu avec mat-tab-group
+un onglet avec un chat general (plusieurs canaux: recrutement, commerce general)
