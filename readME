@@ -8,3 +8,7 @@ but:
 authentification propre (sans recuperation de mot de passe)
 menu avec mat-tab-group
 un onglet avec un chat general (plusieurs canaux: recrutement, commerce general)
+
+
+
+cors? ca va si on met un middleware pour accepter les cors

@@ -42,7 +42,9 @@ exports.createUser = (req, res, next) => {
         .then((result) => {
           res.status(201).json({ message: "User created" });
         })
-        .catch((error) => res.status(400).json({ error }));
+        .catch((error) => {
+          res.status(400).json({ error });
+        });
     })
     .catch((error) => res.status(500).json(error));
 };
@@ -51,12 +53,12 @@ exports.connexion = (req, res, next) => {
   //body validation
   const { error } = connexionValidation(req.body);
   if (error) {
-    return res.status(401).json(error.details[0].message);
+    return res.status(401).json({ message: error.details[0].message });
   }
   //on recupere le user avec l'email
   User.findOne({ email: req.body.email })
     .then((user) => {
-      if (!user) return res.status(200).json({ message: "User not found" });
+      if (!user) return res.status(404).json({ message: "User not found" });
       bcrypt
         .compare(req.body.password, user.password)
         .then((match) => {

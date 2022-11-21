@@ -29,7 +29,6 @@ exports.startGame = (req, res, next) => {
 
   User.findOne({ _id: id })
     .then((user) => {
-      console.log(user);
     })
     .catch((error) => {
       res.status(400).json({
