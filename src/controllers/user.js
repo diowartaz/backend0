@@ -66,9 +66,13 @@ exports.connexion = (req, res, next) => {
           res.status(200).json({
             email: user.email,
             id: user._id,
-            token: jwt.sign({ id: user._id }, process.env.SECRET_KEY_JWT, {
-              expiresIn: "12h",
-            }),
+            token: jwt.sign(
+              { id: user._id, username: user.username },
+              process.env.SECRET_KEY_JWT,
+              {
+                expiresIn: "12h",
+              }
+            ),
           });
         })
         .catch((error) => res.status(500).json(error));
