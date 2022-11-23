@@ -36,8 +36,30 @@ exports.startGame = (req, res, next) => {
     });
 };
 
+exports.getLeaderboard = (req, res, next) => {
+  const { error, id } = getUserIdFromJWT(req);
+  if (error) {
+    return res.status(400).json({
+      error: error,
+    });
+  }
+  let leaderboard = [];
+  User.find()
+    .sort({ xp: -1 })
+    .limit(10)
+    .then((users) => {
+      for (let i = 0; i < users.length; i++) {
+        leaderboard.push({
+          username: users[i].username,
+          xp: users[i].xp,
+          rank: i + 1,
+        });
+      }
+      res.status(200).json({ leaderboard: leaderboard });
+    });
+};
+
 exports.userXP = (req, res, next) => {
-  console.log("userXP");
   const { error, id } = getUserIdFromJWT(req);
   if (error) {
     return res.status(400).json({
