@@ -28,7 +28,35 @@ exports.startGame = (req, res, next) => {
   }
 
   User.findOne({ _id: id })
+    .then((user) => {})
+    .catch((error) => {
+      res.status(400).json({
+        error: error,
+      });
+    });
+};
+
+exports.userXP = (req, res, next) => {
+  console.log("userXP");
+  const { error, id } = getUserIdFromJWT(req);
+  if (error) {
+    return res.status(400).json({
+      error: error,
+    });
+  }
+  User.findOne({ _id: id })
     .then((user) => {
+      user.xp = user.xp + 1;
+      User.updateOne({ _id: id }, user)
+        .then((updateOneResult) => {
+          user["password"] = undefined;
+          res.status(200).json({ user: user });
+        })
+        .catch((error) => {
+          res.status(400).json({
+            error: error,
+          });
+        });
     })
     .catch((error) => {
       res.status(400).json({

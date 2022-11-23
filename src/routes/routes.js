@@ -5,5 +5,6 @@ const routesController = require("../controllers/routesController");
 
 router.use(passport.authenticate("jwt", { session: false }));
 router.post("/item/find/", routesController.searchForItems);
+router.post("/user/xp", routesController.userXP);
 
 module.exports = router;

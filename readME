@@ -10,5 +10,7 @@ menu avec mat-tab-group
 un onglet avec un chat general (plusieurs canaux: recrutement, commerce general)
 
 
-
-cors? ca va si on met un middleware pour accepter les cors
+TODO:
+"souvenir de moi"
+erreur dans des tooltip pour chaque champs signup
+split le app-compoent en plusieurs composants

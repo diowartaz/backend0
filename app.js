@@ -39,7 +39,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 app.use("/", authRouter);
-// app.use("/api/", routesRouter);
+app.use("/", routesRouter);
 
 /* Error handler middleware */
 app.use((err, req, res, next) => {

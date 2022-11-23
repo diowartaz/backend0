@@ -13,6 +13,10 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  xp: {
+    type: Number,
+    default: 0,
+  },
   city: {
     type: Object({
       inventory: {
