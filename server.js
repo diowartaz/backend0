@@ -1,5 +1,9 @@
 const http = require("http");
 const app = require("./app");
+const {
+  eventHandler,
+  connectionHandler,
+} = require("./src/eventHanlder/eventHandler");
 const WebSocket = require("ws");
 
 const normalizePort = (val) => {
@@ -17,6 +21,7 @@ const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
 const errorHandler = (error) => {
+  console.log("regegr");
   if (error.syscall !== "listen") {
     throw error;
   }
@@ -40,20 +45,23 @@ const errorHandler = (error) => {
 const server = http.createServer(app);
 
 ///////////////////////////////////// Debut ws ///////////////////////////////////////////
-
-//initialize the WebSocket server instance
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({ server }); //, verifyClient: verifyClientHandler
 
 wss.on("connection", function connection(ws, request, client) {
-  console.log(request, client)
-
-  ws.on('message', function message(data, isBinary) {
-    wss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(data, { binary: isBinary });
-      }
-    });
+  try {
+    const JWT = request.url.slice(1);
+    connectionHandler(JWT, wss, ws);
+  } catch (e) {
+    console.log("error: close ws", e);
+    ws.close(3401, "Authentification error"); //3401, "Authentification error"
+  }
+  ws.on("message", function message(data) {
+    eventHandler(data, wss, ws);
   });
+});
+
+wss.on("error", function revve() {
+  console.log("wss.on error");
 });
 
 ///////////////////////////////////// Fin ws ///////////////////////////////////////////

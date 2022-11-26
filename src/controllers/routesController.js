@@ -1,5 +1,4 @@
 const User = require("../models/user");
-const passportJWT = require("passport-jwt");
 const jwt = require("jsonwebtoken");
 const { City } = require("../utils");
 
@@ -37,12 +36,6 @@ exports.startGame = (req, res, next) => {
 };
 
 exports.getLeaderboard = (req, res, next) => {
-  const { error, id } = getUserIdFromJWT(req);
-  if (error) {
-    return res.status(400).json({
-      error: error,
-    });
-  }
   let leaderboard = [];
   User.find()
     .sort({ xp: -1 })
