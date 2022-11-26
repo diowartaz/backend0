@@ -3,14 +3,15 @@ swagger https://www.youtube.com/watch?v=S8kmHtQeflo
 
 Authorization: Bearer {token}
 
-
 but:
 authentification propre (sans recuperation de mot de passe)
 menu avec mat-tab-group
 un onglet avec un chat general (plusieurs canaux: recrutement, commerce general)
 
-
 TODO:
 "souvenir de moi"
 erreur dans des tooltip pour chaque champs signup
-split le app-compoent en plusieurs composants
+ok - split le app-compoent en plusieurs composants
+faire la reconnexion websocket (loader, etc)
+JWT refresh
+faire messagerie au lieu du chat (historique de conversation stocké en base)

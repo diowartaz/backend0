@@ -45,7 +45,7 @@ const errorHandler = (error) => {
 const server = http.createServer(app);
 
 ///////////////////////////////////// Debut ws ///////////////////////////////////////////
-const wss = new WebSocket.Server({ server }); //, verifyClient: verifyClientHandler
+const wss = new WebSocket.Server({ server }); // path: "/chat"
 
 wss.on("connection", function connection(ws, request, client) {
   try {
@@ -55,8 +55,13 @@ wss.on("connection", function connection(ws, request, client) {
     console.log("error: close ws", e);
     ws.close(3401, "Authentification error"); //3401, "Authentification error"
   }
+
   ws.on("message", function message(data) {
-    eventHandler(data, wss, ws);
+    try {
+      eventHandler(data, wss, ws);
+    } catch (e) {
+      console.log(e);
+    }
   });
 });
 
