@@ -10,8 +10,12 @@ un onglet avec un chat general (plusieurs canaux: recrutement, commerce general)
 
 TODO:
 "souvenir de moi"
+JWT refresh
 erreur dans des tooltip pour chaque champs signup
 ok - split le app-compoent en plusieurs composants
 faire la reconnexion websocket (loader, etc)
-JWT refresh
+
+
 faire messagerie au lieu du chat (historique de conversation stocké en base)
+scroll opti lazy loading
+envoie d'image (downlaod l'image)
