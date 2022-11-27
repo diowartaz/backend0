@@ -18,7 +18,7 @@ mongoose
   .catch((err) => console.log("Connexion à MongoDB échouée !", err));
 
 // process.env.URL
-app.use(cors()); //{ origin: process.env.URL }
+app.use(cors()); //{ origin: process.env.URL }/
 app.use(express.json());
 
 app.use(bodyParser.json());
