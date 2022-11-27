@@ -1,21 +1,19 @@
-const passport = require("passport");
-const passportJWT = require("passport-jwt");
-const User = require("../models/user");
+const jwt = require('jsonwebtoken');
 
-passport.use(
-  new passportJWT.Strategy(
-    {
-      jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.SECRET_KEY_JWT,
-    },
-    function (jwtPayload, done) {
-      return User.findById(jwtPayload.id)
-        .then((user) => {
-          return done(null, user);
-        })
-        .catch((error) => {
-          return done(error);
-        });
+module.exports = (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    console.log("token", token)
+    const decodedToken = jwt.verify(token, process.env.SECRET_KEY_JWT);
+    const userId = decodedToken.userId;
+    if (req.body.userId && req.body.userId !== userId) {
+      throw 'Invalid user ID';
+    } else {
+      next();
     }
-  )
-);
+  } catch {
+    res.status(401).json({
+      error: new Error('Invalid request!')
+    });
+  }
+};

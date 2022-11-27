@@ -9,9 +9,6 @@ var cors = require("cors");
 const authRouter = require("./src/routes/user");
 const routesRouter = require("./src/routes/routes");
 
-//middleWares
-require("./src/middlewares/auth");
-
 mongoose
   .connect(
     `mongodb+srv://diowartaz:${process.env.DB_PASSWORD}@cluster0.r2zjn.mongodb.net/?retryWrites=true&w=majority`,
@@ -21,7 +18,7 @@ mongoose
   .catch((err) => console.log("Connexion à MongoDB échouée !", err));
 
 // process.env.URL
-app.use(cors({ origin: process.env.URL }));
+app.use(cors()); //{ origin: process.env.URL }
 app.use(express.json());
 
 app.use(bodyParser.json());
