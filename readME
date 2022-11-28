@@ -1,6 +1,9 @@
 https://www.youtube.com/watch?v=bvSY0B1DpW0
 swagger https://www.youtube.com/watch?v=S8kmHtQeflo
 
+deploy angular project on heroku: https://www.youtube.com/watch?v=EuUD3Gi0CF0
+bails sur angular https://dyma.fr/developer/list/chapters/core
+
 Authorization: Bearer {token}
 
 but:
@@ -15,7 +18,15 @@ erreur dans des tooltip pour chaque champs signup
 ok - split le app-compoent en plusieurs composants
 faire la reconnexion websocket (loader, etc)
 
-
 faire messagerie au lieu du chat (historique de conversation stocké en base)
 scroll opti lazy loading
 envoie d'image (downlaod l'image)
+
+"scripts": {
+"test": "echo \"Error: no test specified\" && exit 1",
+"dev": "nodemon server.js",
+"start": "node server.js"
+},
+
+      "start": "./node_modules/.bin/netlify-lambda serve src",
+    "build": "./node_modules/.bin/netlify-lambda build src"
