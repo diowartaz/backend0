@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "build": "webpack"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,8 +19,6 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.1",
     "mongoose-unique-validator": "^3.1.0",
-    "netlify-lambda": "^2.0.15",
-    "serverless-http": "^3.1.0",
     "validator": "^13.7.0",
     "ws": "^8.11.0"
   },
