@@ -18,21 +18,11 @@ mongoose
   .catch((err) => console.log("Connexion à MongoDB échouée !", err));
 
 // process.env.URL
-app.use(cors()); //{ origin: process.env.URL }/
+app.use(cors());
 app.use(express.json());
-
 app.use(bodyParser.json());
 
 app.use("/", authRouter);
 app.use("/", routesRouter);
-
-/* Error handler middleware */
-app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  console.error(err.message, err.stack);
-  res.status(statusCode).json({ message: err.message });
-
-  return;
-});
 
 module.exports = app;

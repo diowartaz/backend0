@@ -30,3 +30,7 @@ envoie d'image (downlaod l'image)
 
       "start": "./node_modules/.bin/netlify-lambda serve src",
     "build": "./node_modules/.bin/netlify-lambda build src"
+
+
+  
+back deployed with render: https://diowartaz.onrender.com/leaderboard

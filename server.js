@@ -20,28 +20,6 @@ const normalizePort = (val) => {
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
-const errorHandler = (error) => {
-  console.log("regegr");
-  if (error.syscall !== "listen") {
-    throw error;
-  }
-  const address = server.address();
-  const bind =
-    typeof address === "string" ? "pipe " + address : "port: " + port;
-  switch (error.code) {
-    case "EACCES":
-      console.error(bind + " requires elevated privileges.");
-      process.exit(1);
-      break;
-    case "EADDRINUSE":
-      console.error(bind + " is already in use.");
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-};
-
 // const https = require("https");
 // const path = require("path");
 // const fs = require("fs");
@@ -80,7 +58,6 @@ wss.on("error", function revve() {
 
 ///////////////////////////////////// Fin ws ///////////////////////////////////////////
 
-server.on("error", errorHandler);
 server.on("listening", () => {
   const address = server.address();
   const bind = typeof address === "string" ? "pipe " + address : "port " + port;
