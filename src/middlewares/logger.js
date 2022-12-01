@@ -1,6 +1,6 @@
 function logger(req, res, next) {
-  console.log(`[${Date.now()}] ${req.method} ${req.url}`);
+  console.log(`[${new Date()}] ${req.method} ${req.url}`);
   next();
 }
 
-module.export = this.logger;
+module.exports = { logger };

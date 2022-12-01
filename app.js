@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 require("dotenv").config();
 var cors = require("cors");
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+const { optionsSwagger } = require("./src/utils/swagger");
+const { logger } = require("./src/middlewares/logger");
 
 //Routes
 const authRouter = require("./src/routes/user");
@@ -17,12 +21,15 @@ mongoose
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch((err) => console.log("Connexion à MongoDB échouée !", err));
 
-// process.env.URL
-app.use(cors());
+app.use(cors()); // process.env.URL
 app.use(express.json());
 app.use(bodyParser.json());
+// app.use(logger)
 
 app.use("/", authRouter);
 app.use("/", routesRouter);
+
+const specs = swaggerJsdoc(optionsSwagger);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 module.exports = app;

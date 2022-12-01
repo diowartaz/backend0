@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
-var validator = require("validator"); //https://www.npmjs.com/package/validator
 
 const userSchema = mongoose.Schema({
   username: { type: String, required: true, unique: true },
