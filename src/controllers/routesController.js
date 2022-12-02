@@ -1,22 +1,5 @@
 const User = require("../models/user");
-const jwt = require("jsonwebtoken");
-const { City } = require("../utils");
-
-function getUserIdFromJWT(req) {
-  let res = {
-    error: null,
-    id: null,
-  };
-  try {
-    let token = req.headers.authorization.slice(7);
-    const decoded = jwt.verify(token, process.env.SECRET_KEY_JWT);
-    res.id = decoded.id;
-    return res;
-  } catch (error) {
-    res.error = error;
-    return res;
-  }
-}
+const { getUserIdFromJWT } = require("../utils/utils");
 
 exports.startGame = (req, res, next) => {
   const { error, id } = getUserIdFromJWT(req);

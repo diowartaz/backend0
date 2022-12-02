@@ -56,10 +56,6 @@ function eventHandler(event, wss, ws) {
   }
 }
 
-// function verifyClientHandler(info, wss) {
-//   const { origin, req, secure } = info;
-
-// }
 function connectionHandler(JWT, wss, ws) {
   //event = { eventCode: EventCode, data: data, JWT: JWT};
   const decoded = jwt.verify(JWT, process.env.SECRET_KEY_JWT);
