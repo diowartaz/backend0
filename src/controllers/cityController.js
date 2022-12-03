@@ -164,3 +164,43 @@ exports.waitForTheAttack = (req, res, next) => {
       });
     });
 };
+exports.build = (req, res, next) => {
+  let getUserIdFromJWTRes = getUserIdFromJWT(req);
+  if (getUserIdFromJWTRes.error) {
+    return res.status(400).json({
+      error: getUserIdFromJWTRes.error,
+    });
+  }
+
+  User.findOne({ _id: getUserIdFromJWTRes.id })
+    .then((user) => {
+      //check if the building id is in the user.city.buildings
+      //check if user.city.inventory has the item and max-level
+      //check if user has time to build
+
+      //build lvl++
+      //we substract the building ressources to user.city.inventory
+      // add time to user.city.time
+
+      //update with the new city
+      User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
+        .then((updateOneResult) => {
+          //retourner le user sans le password
+          user.password = null;
+          res.status(200).json({ user: user });
+        })
+        .catch((error) => {
+          res.status(400).json({
+            error: error,
+          });
+        });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: error,
+      });
+    });
+};
+
+
+
