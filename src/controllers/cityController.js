@@ -104,7 +104,7 @@ exports.findItem = (req, res, next) => {
         let find_items_time = defaultValues.find_item_time * req.params.nb;
         //si le temps de fouille depasse la fin de la journée alors return error
         if (
-          find_items_time + user.game.city.time >=
+          find_items_time + user.game.city.time >
           defaultValues.day_end_time
         ) {
           return res.status(400).json({
@@ -123,12 +123,9 @@ exports.findItem = (req, res, next) => {
           //update le user
           User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
             .then((updateOneResult) => {
-              //retourner le user sans le password
-              user.password = null;
               res.status(200).json({
-                new_city_inventory: user.game.city.inventory,
+                city: user.game.city,
                 items_found_inventory,
-                new_city_time: user.game.city.time,
               });
             })
             .catch((error) => {
@@ -164,7 +161,7 @@ exports.waitForTheAttack = (req, res, next) => {
       //update le user
       User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
         .then((updateOneResult) => {
-          res.status(200).json({ game: user.game });
+          res.status(200).json({ city: user.game.city, xp: user.game.xp });
         })
         .catch((error) => {
           res.status(400).json({

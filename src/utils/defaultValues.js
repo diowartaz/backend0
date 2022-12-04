@@ -1,4 +1,4 @@
-const items = ["wood", "metal", "stone", "srew", "patch"];
+const items = ["wood", "metal", "stone", "screw", "patch"];
 
 const palissade = {
   defense: 25,
@@ -38,7 +38,7 @@ const renforcedWall = {
   lvl_max: 3,
   time: 4 * 60 * 60,
   ressouces: {
-    srew: 2,
+    screw: 2,
     metal: 3,
     stone: 4,
   },
@@ -60,7 +60,7 @@ const buildings = [palissade, hugePit, giantWall, renforcedWall, barricade];
 const newCity = {
   day: 1,
   defense: 57,
-  buildings: [],
+  buildings: buildings,
   nb_zb_history: [],
   nb_zb_previous_attack: 9,
   nb_zb_next_attack_min: 13,
@@ -78,7 +78,7 @@ const defaultValues = {
   items,
   find_item_time: 1 * 60 * 60,
   day_start_time: 5 * 60 * 60,
-  day_end_time: 21 * 60 * 60,
+  day_end_time: 21 * 60 * 60 + 59,
 };
 
 module.exports = defaultValues;
