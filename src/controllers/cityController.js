@@ -14,16 +14,21 @@ exports.new = (req, res, next) => {
 
   User.findOne({ _id: id })
     .then((user) => {
-      if (user.city) {
+      if (user.game && user.game.city) {
         res.status(400).json({
           error: "City already in progress",
         });
       } else {
-        user.city = { ...defaultValues.newCity };
+        if (!user.game) {
+          user.game = {
+            xp: 0,
+            city: null,
+          };
+        }
+        user.game.city = { ...defaultValues.newCity };
         User.updateOne({ _id: id }, user)
           .then((updateOneResult) => {
-            user.password = null;
-            res.status(200).json({ user: user });
+            res.status(200).json({ game: user.game });
           })
           .catch((error) => {
             res.status(400).json({
@@ -49,12 +54,16 @@ exports.delete = (req, res, next) => {
 
   User.findOne({ _id: id })
     .then((user) => {
-      if (user.city) {
-        user.city = null;
+      if (user.game && user.game.city) {
+        if (!user.game) {
+          user.game = {
+            xp: 0,
+          };
+        }
+        user.game.city = null;
         User.updateOne({ _id: id }, user)
           .then((updateOneResult) => {
-            user.password = null;
-            res.status(200).json({ user: user });
+            res.status(200).json({ message: "Your city was deleted" });
           })
           .catch((error) => {
             res.status(400).json({
@@ -94,7 +103,10 @@ exports.findItem = (req, res, next) => {
         //calculer le temps de fouille
         let find_items_time = defaultValues.find_item_time * req.params.nb;
         //si le temps de fouille depasse la fin de la journée alors return error
-        if (find_items_time + user.city.time >= defaultValues.day_end_time) {
+        if (
+          find_items_time + user.game.city.time >=
+          defaultValues.day_end_time
+        ) {
           return res.status(400).json({
             error: "Not enough time",
           });
@@ -102,18 +114,22 @@ exports.findItem = (req, res, next) => {
         } else {
           //generer la liste des items trouvés
           let items_found_inventory = utils.randomInventory(req.params.nb);
-          //ajout cette liste à user.city.inventory
-          user.city.inventory = utils.combineInventories(
-            user.city.inventory,
+          //ajout cette liste à user.game.city.inventory
+          user.game.city.inventory = utils.combineInventories(
+            user.game.city.inventory,
             items_found_inventory
           );
-          user.city.time += find_items_time;
+          user.game.city.time += find_items_time;
           //update le user
           User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
             .then((updateOneResult) => {
               //retourner le user sans le password
               user.password = null;
-              res.status(200).json({ user: user });
+              res.status(200).json({
+                new_city_inventory: user.game.city.inventory,
+                items_found_inventory,
+                new_city_time: user.game.city.time,
+              });
             })
             .catch((error) => {
               res.status(400).json({
@@ -148,9 +164,7 @@ exports.waitForTheAttack = (req, res, next) => {
       //update le user
       User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
         .then((updateOneResult) => {
-          //retourner le user sans le password
-          user.password = null;
-          res.status(200).json({ user: user });
+          res.status(200).json({ game: user.game });
         })
         .catch((error) => {
           res.status(400).json({
@@ -174,13 +188,13 @@ exports.build = (req, res, next) => {
 
   User.findOne({ _id: getUserIdFromJWTRes.id })
     .then((user) => {
-      //check if the building id is in the user.city.buildings
-      //check if user.city.inventory has the item and max-level
+      //check if the building id is in the user.game.city.buildings
+      //check if user.game.city.inventory has the item and max-level
       //check if user has time to build
 
       //build lvl++
-      //we substract the building ressources to user.city.inventory
-      // add time to user.city.time
+      //we substract the building ressources to user.game.city.inventory
+      // add time to user.game.city.time
 
       //update with the new city
       User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
@@ -201,6 +215,3 @@ exports.build = (req, res, next) => {
       });
     });
 };
-
-
-

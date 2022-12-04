@@ -1,4 +1,4 @@
-const items = ["wood", "metal", "stone", "srew"];
+const items = ["wood", "metal", "stone", "srew", "patch"];
 
 const palissade = {
   defense: 25,
@@ -59,13 +59,14 @@ const buildings = [palissade, hugePit, giantWall, renforcedWall, barricade];
 
 const newCity = {
   day: 1,
+  defense: 57,
   buildings: [],
   nb_zb_history: [],
   nb_zb_previous_attack: 9,
   nb_zb_next_attack_min: 13,
   nb_zb_next_attack_max: 17,
   time: 5 * 60 * 60, //6h du mat
-  inventory: {},
+  inventory: { wood: 0, stone: 0, screw: 0, metal: 0, patch: 0 },
   speeds: {
     build: 1,
     learn: 1,

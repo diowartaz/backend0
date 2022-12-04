@@ -13,6 +13,7 @@ const { logger } = require("./src/middlewares/logger");
 const authRouter = require("./src/routes/user");
 const routesRouter = require("./src/routes/routes");
 const cityRouter = require("./src/routes/city");
+const gameRouter = require("./src/routes/game");
 
 mongoose
   .connect(
@@ -25,11 +26,12 @@ mongoose
 app.use(cors()); // process.env.URL
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(logger)
+app.use(logger);
 
 app.use("/", authRouter);
 app.use("/", routesRouter);
 app.use("/city", cityRouter);
+app.use("/game", gameRouter);
 
 const specs = swaggerJsdoc(optionsSwagger);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));

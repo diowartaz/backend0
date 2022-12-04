@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  city: { type: Object({}) },
+  game: { type: Object({}), default: { xp: 0, city: null } },
   creation_date: { type: Date, default: Date.now },
 });
 

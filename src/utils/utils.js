@@ -56,17 +56,21 @@ function randomInventory(nb_items) {
 
 function nextDay(user) {
   let userNextDay = { ...user };
-  userNextDay.city.day += 1;
-  userNextDay.city.time = defaultValues.day_start_time;
-  userNextDay.city.nb_zb_previous_attack =
-    userNextDay.city.nb_zb_previous_attack +
-    getRandomIntMinMax(userNextDay.city.day * 2, userNextDay.city.day * 4);
-  userNextDay.city.nb_zb_next_attack_min =
-    userNextDay.city.nb_zb_previous_attack + (userNextDay.city.day + 1) * 2;
-  userNextDay.city.nb_zb_next_attack_max =
-    userNextDay.city.nb_zb_previous_attack + (userNextDay.city.day + 1) * 4;
+  //update day
+  userNextDay.game.city.day += 1;
+  //update time
+  userNextDay.game.city.time = defaultValues.day_start_time;
+  //update nb zb
+  userNextDay.game.city.nb_zb_previous_attack =
+    userNextDay.game.city.nb_zb_previous_attack +
+    getRandomIntMinMax(userNextDay.game.city.day * 2, userNextDay.game.city.day * 4);
+  userNextDay.game.city.nb_zb_next_attack_min =
+    userNextDay.game.city.nb_zb_previous_attack + (userNextDay.game.city.day + 1) * 2;
+  userNextDay.game.city.nb_zb_next_attack_max =
+    userNextDay.game.city.nb_zb_previous_attack + (userNextDay.game.city.day + 1) * 4;
 
-  userNextDay.city.nb_zb_history.push(userNextDay.city.nb_zb_previous_attack);
+  //update nb_zb_history
+  userNextDay.game.city.nb_zb_history.push(userNextDay.game.city.nb_zb_previous_attack);
   return userNextDay;
 }
 
