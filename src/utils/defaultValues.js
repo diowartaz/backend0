@@ -1,11 +1,13 @@
 const items = ["wood", "metal", "stone", "screw", "patch"];
 
 const palissade = {
+  id: 1,
+  name: "Palissade",
   defense: 25,
   lvl: 0,
   lvl_max: 3,
   time: 2 * 60 * 60,
-  ressouces: {
+  inventory: {
     wood: 2,
     metal: 3,
     screw: 1,
@@ -13,19 +15,23 @@ const palissade = {
 };
 
 const hugePit = {
+  id: 2,
+  name: "Huge pit",
   defense: 15,
   lvl: 0,
   lvl_max: 4,
   time: 5 * 60 * 60,
-  ressouces: {},
+  inventory: {},
 };
 
 const giantWall = {
+  id: 3,
+  name: "Giant wall",
   defense: 40,
   lvl: 0,
   lvl_max: 2,
   time: 2 * 60 * 60,
-  ressouces: {
+  inventory: {
     wood: 5,
     metal: 5,
     stone: 2,
@@ -33,11 +39,13 @@ const giantWall = {
 };
 
 const renforcedWall = {
+  id: 4,
+  name: "Renforced wall",
   defense: 45,
   lvl: 0,
   lvl_max: 3,
   time: 4 * 60 * 60,
-  ressouces: {
+  inventory: {
     screw: 2,
     metal: 3,
     stone: 4,
@@ -45,11 +53,13 @@ const renforcedWall = {
 };
 
 const barricade = {
+  id: 5,
+  name: "Barricade",
   defense: 10,
   lvl: 0,
   lvl_max: 5,
   time: 1 * 60 * 60,
-  ressouces: {
+  inventory: {
     wood: 2,
     metal: 1,
   },
@@ -70,6 +80,7 @@ const newCity = {
   speeds: {
     build: 1,
     learn: 1,
+    dig: 1,
   },
 };
 
@@ -77,8 +88,9 @@ const defaultValues = {
   newCity,
   items,
   find_item_time: 1 * 60 * 60,
-  day_start_time: 5 * 60 * 60,
-  day_end_time: 21 * 60 * 60 + 59,
+  day_start_time: 8 * 60 * 60,
+  day_end_time: 24 * 60 * 60 + 59,
+  digging_time: 1 * 60 * 60,
 };
 
 module.exports = defaultValues;

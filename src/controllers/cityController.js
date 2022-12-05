@@ -2,7 +2,10 @@ const User = require("../models/user");
 const { getUserIdFromJWT } = require("../utils/utils");
 const defaultValues = require("../utils/defaultValues");
 const utils = require("../utils/utils");
-const { findItemValidation } = require("../validation/cityValidators");
+const {
+  findItemValidation,
+  buildValidation,
+} = require("../validation/cityValidators");
 
 exports.new = (req, res, next) => {
   const { error, id } = getUserIdFromJWT(req);
@@ -176,6 +179,105 @@ exports.waitForTheAttack = (req, res, next) => {
     });
 };
 exports.build = (req, res, next) => {
+  try {
+    let getUserIdFromJWTRes = getUserIdFromJWT(req);
+    if (getUserIdFromJWTRes.error) {
+      return res.status(400).json({
+        error: getUserIdFromJWTRes.error,
+      });
+    }
+    let buildValidationRes = buildValidation(req.params);
+    if (buildValidationRes.error) {
+      return res
+        .status(400)
+        .json({ error: buildValidationRes.error.details[0].message });
+    }
+
+    User.findOne({ _id: getUserIdFromJWTRes.id })
+      .then((user) => {
+        let buildId = req.params.id;
+        //check if the building id is in the user.game.city.buildings
+        let buildingUserWantToBuild = null;
+        for (const building of user.game.city.buildings) {
+          if (building.id == buildId) {
+            buildingUserWantToBuild = building;
+            break;
+          }
+        }
+        if (!buildingUserWantToBuild) {
+          return res
+            .status(400)
+            .json({ error: "Building " + buildId + " not available" });
+        }
+
+        //check if building is not max-level
+        if (buildingUserWantToBuild.lvl == buildingUserWantToBuild.lvl_max) {
+          return res.status(400).json({
+            error: "Building " + buildId + " is alrealdy at its max level",
+          });
+        }
+
+        //check if user has time to build
+        if (
+          buildingUserWantToBuild.time * user.game.city.speeds.build +
+            user.game.city.time >
+          defaultValues.day_end_time
+        ) {
+          return res.status(400).json({
+            error: "Building " + buildId + " not enought time to build",
+          });
+        }
+
+        //check if user.game.city.inventory has the item
+        if (
+          !utils.contains(
+            user.game.city.inventory,
+            buildingUserWantToBuild.inventory
+          )
+        ) {
+          return res.status(400).json({
+            error: "Building " + buildId + " not enought ressouces",
+          });
+        }
+
+        //build lvl++
+        buildingUserWantToBuild.lvl++;
+
+        //we substract the building ressources to user.game.city.inventory
+        utils.minus(
+          user.game.city.inventory,
+          buildingUserWantToBuild.inventory
+        );
+
+        // add time to user.game.city.time
+        user.game.city.time +=
+          buildingUserWantToBuild.time * user.game.city.speeds.build;
+
+        // add defense to user.game.city.defense
+        user.game.city.defense += buildingUserWantToBuild.defense;
+
+        //update with the new city
+        User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
+          .then((updateOneResult) => {
+            res.status(200).json({ city: user.game.city });
+          })
+          .catch((error) => {
+            res.status(400).json({
+              error: error,
+            });
+          });
+      })
+      .catch((error) => {
+        res.status(400).json({
+          error: error,
+        });
+      });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getDefaultValues = (req, res, next) => {
   let getUserIdFromJWTRes = getUserIdFromJWT(req);
   if (getUserIdFromJWTRes.error) {
     return res.status(400).json({
@@ -185,26 +287,7 @@ exports.build = (req, res, next) => {
 
   User.findOne({ _id: getUserIdFromJWTRes.id })
     .then((user) => {
-      //check if the building id is in the user.game.city.buildings
-      //check if user.game.city.inventory has the item and max-level
-      //check if user has time to build
-
-      //build lvl++
-      //we substract the building ressources to user.game.city.inventory
-      // add time to user.game.city.time
-
-      //update with the new city
-      User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
-        .then((updateOneResult) => {
-          //retourner le user sans le password
-          user.password = null;
-          res.status(200).json({ user: user });
-        })
-        .catch((error) => {
-          res.status(400).json({
-            error: error,
-          });
-        });
+      res.status(200).json({ default_values: defaultValues });
     })
     .catch((error) => {
       res.status(400).json({

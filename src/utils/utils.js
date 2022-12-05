@@ -54,6 +54,42 @@ function randomInventory(nb_items) {
   return inventory;
 }
 
+function contains(inv1, inv2) {
+  //return inv1 >= inv2
+  for (const itemName in inv2) {
+    if (!(inv1.hasOwnProperty(itemName) && inv1[itemName] >= inv2[itemName])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+//tests
+// let test_inv_1 = { wood: 2, stone: 3, patch: 4 };
+// let test_inv_2 = { wood: 2, stone: 3, patch: 4 };
+// let test_inv_3 = { wood: 5, stone: 3, patch: 4 };
+// let test_inv_4 = { wood: 2, stone: 3, patch: 1 };
+
+// let test_inv_5 = { wood: 2, stone: 3, patch: 4, fzefzef: 2 };
+
+// console.log(contains(test_inv_1, test_inv_2));
+// console.log(contains(test_inv_2, test_inv_1));
+
+// console.log(contains(test_inv_1, test_inv_3) == false);
+// console.log(contains(test_inv_3, test_inv_1));
+
+// console.log(contains(test_inv_1, test_inv_4));
+// console.log(contains(test_inv_4, test_inv_1) == false);
+
+// console.log(contains(test_inv_1, test_inv_5) == false);
+// console.log(contains(test_inv_5, test_inv_1) == true);
+
+function minus(inv1, inv2) {
+  for (const itemName in inv2) {
+    inv1[itemName] -= inv2[itemName];
+  }
+}
+
 function nextDay(user) {
   let userNextDay = { ...user };
   //update day
@@ -63,14 +99,21 @@ function nextDay(user) {
   //update nb zb
   userNextDay.game.city.nb_zb_previous_attack =
     userNextDay.game.city.nb_zb_previous_attack +
-    getRandomIntMinMax(userNextDay.game.city.day * 2, userNextDay.game.city.day * 4);
+    getRandomIntMinMax(
+      userNextDay.game.city.day * 2,
+      userNextDay.game.city.day * 4
+    );
   userNextDay.game.city.nb_zb_next_attack_min =
-    userNextDay.game.city.nb_zb_previous_attack + (userNextDay.game.city.day + 1) * 2;
+    userNextDay.game.city.nb_zb_previous_attack +
+    (userNextDay.game.city.day + 1) * 2;
   userNextDay.game.city.nb_zb_next_attack_max =
-    userNextDay.game.city.nb_zb_previous_attack + (userNextDay.game.city.day + 1) * 4;
+    userNextDay.game.city.nb_zb_previous_attack +
+    (userNextDay.game.city.day + 1) * 4;
 
   //update nb_zb_history
-  userNextDay.game.city.nb_zb_history.push(userNextDay.game.city.nb_zb_previous_attack);
+  userNextDay.game.city.nb_zb_history.push(
+    userNextDay.game.city.nb_zb_previous_attack
+  );
   return userNextDay;
 }
 
@@ -79,4 +122,6 @@ module.exports = {
   randomInventory,
   combineInventories,
   nextDay,
+  contains,
+  minus,
 };
