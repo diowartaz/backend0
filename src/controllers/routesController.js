@@ -1,23 +1,6 @@
 const User = require("../models/user");
 const { getUserIdFromJWT } = require("../utils/utils");
 
-exports.startGame = (req, res, next) => {
-  const { error, id } = getUserIdFromJWT(req);
-  if (error) {
-    return res.status(400).json({
-      error: error,
-    });
-  }
-
-  User.findOne({ _id: id })
-    .then((user) => {})
-    .catch((error) => {
-      res.status(400).json({
-        error: error,
-      });
-    });
-};
-
 exports.getLeaderboard = (req, res, next) => {
   let leaderboard = [];
   User.find()
@@ -48,37 +31,6 @@ exports.userXP = (req, res, next) => {
       User.updateOne({ _id: id }, user)
         .then((updateOneResult) => {
           user["password"] = undefined;
-          res.status(200).json({ user: user });
-        })
-        .catch((error) => {
-          res.status(400).json({
-            error: error,
-          });
-        });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: error,
-      });
-    });
-};
-
-exports.searchForItems = (req, res, next) => {
-  const { error, id } = getUserIdFromJWT(req);
-  if (error) {
-    return res.status(400).json({
-      error: error,
-    });
-  }
-  User.findOne({ _id: id })
-    .then((user) => {
-      const randomItem = findRandomItem();
-      //verify that we have time to find items
-
-      //add items to city inventory
-
-      User.updateOne({ _id: id }, user)
-        .then((updateOneResult) => {
           res.status(200).json({ user: user });
         })
         .catch((error) => {

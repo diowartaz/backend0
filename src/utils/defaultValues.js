@@ -20,7 +20,7 @@ const hugePit = {
   defense: 15,
   lvl: 0,
   lvl_max: 4,
-  time: 5 * 60 * 60,
+  time: 8 * 60 * 60,
   inventory: {},
 };
 
@@ -67,15 +67,16 @@ const barricade = {
 
 const buildings = [palissade, hugePit, giantWall, renforcedWall, barricade];
 
+const day_start_time = 8 * 60 * 60;
 const newCity = {
   day: 1,
-  defense: 57,
+  defense: 20,
   buildings: buildings,
   nb_zb_history: [],
   nb_zb_previous_attack: 9,
   nb_zb_next_attack_min: 13,
   nb_zb_next_attack_max: 17,
-  time: 5 * 60 * 60, //6h du mat
+  time: day_start_time,
   inventory: { wood: 0, stone: 0, screw: 0, metal: 0, patch: 0 },
   speeds: {
     build: 1,
@@ -87,10 +88,9 @@ const newCity = {
 const defaultValues = {
   newCity,
   items,
-  find_item_time: 1 * 60 * 60,
-  day_start_time: 8 * 60 * 60,
+  day_start_time,
   day_end_time: 24 * 60 * 60 + 59,
-  digging_time: 1 * 60 * 60,
+  digging_time: 2 * 60 * 60,
 };
 
 module.exports = defaultValues;

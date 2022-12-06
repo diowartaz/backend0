@@ -91,30 +91,83 @@ function minus(inv1, inv2) {
 }
 
 function nextDay(user) {
-  let userNextDay = { ...user };
-  //update day
-  userNextDay.game.city.day += 1;
-  //update time
-  userNextDay.game.city.time = defaultValues.day_start_time;
-  //update nb zb
-  userNextDay.game.city.nb_zb_previous_attack =
-    userNextDay.game.city.nb_zb_previous_attack +
-    getRandomIntMinMax(
-      userNextDay.game.city.day * 2,
-      userNextDay.game.city.day * 4
-    );
-  userNextDay.game.city.nb_zb_next_attack_min =
-    userNextDay.game.city.nb_zb_previous_attack +
-    (userNextDay.game.city.day + 1) * 2;
-  userNextDay.game.city.nb_zb_next_attack_max =
-    userNextDay.game.city.nb_zb_previous_attack +
-    (userNextDay.game.city.day + 1) * 4;
+  try {
+    let userNextDay = { ...user };
+    let attackResult = {
+      nb_zb:
+        userNextDay.player.city.nb_zb_previous_attack +
+        getRandomIntMinMax(
+          userNextDay.player.city.day * 2,
+          userNextDay.player.city.day * 4
+        ),
+      defense: userNextDay.player.city.defense,
+      alive: true,
+      player_xp: 0,
+      day: userNextDay.player.city.day,
+    };
 
-  //update nb_zb_history
-  userNextDay.game.city.nb_zb_history.push(
-    userNextDay.game.city.nb_zb_previous_attack
-  );
-  return userNextDay;
+    //check if user is dead
+    if (userNextDay.player.city.defense < attackResult.nb_zb) {
+      //user is dead
+      attackResult.alive = false;
+      //add xp
+      attackResult.player_xp = 0;
+      for (const nb_zb of userNextDay.player.city.nb_zb_history) {
+        attackResult.player_xp += nb_zb;
+      }
+      userNextDay.player.data.xp += attackResult.player_xp;
+
+      //update reccord zombie
+      if (userNextDay.player.data.personal_best_zb) {
+        if (
+          userNextDay.player.data.personal_best_zb <
+          userNextDay.player.city.nb_zb_previous_attack
+        ) {
+          userNextDay.player.data.personal_best_zb =
+            userNextDay.player.city.nb_zb_previous_attack;
+        }
+      } else {
+        userNextDay.player.data.personal_best_zb =
+          userNextDay.player.city.nb_zb_previous_attack;
+      }
+
+      //update reccord day
+      if (userNextDay.player.data.personal_best_day) {
+        if (
+          userNextDay.player.data.personal_best_day <
+          userNextDay.player.city.day
+        ) {
+          userNextDay.player.data.personal_best_day =
+            userNextDay.player.city.day;
+        }
+      } else {
+        userNextDay.player.data.personal_best_day = userNextDay.player.city.day;
+      }
+      userNextDay.player.city = null;
+      return { userNextDay, attackResult };
+    }
+    //update day
+    userNextDay.player.city.day += 1;
+    //update time
+    userNextDay.player.city.time = defaultValues.day_start_time;
+    //update nb zb
+    userNextDay.player.city.nb_zb_previous_attack = attackResult.nb_zb;
+
+    userNextDay.player.city.nb_zb_next_attack_min =
+      userNextDay.player.city.nb_zb_previous_attack +
+      (userNextDay.player.city.day + 1) * 2;
+    userNextDay.player.city.nb_zb_next_attack_max =
+      userNextDay.player.city.nb_zb_previous_attack +
+      (userNextDay.player.city.day + 1) * 4;
+
+    //update nb_zb_history
+    userNextDay.player.city.nb_zb_history.push(
+      userNextDay.player.city.nb_zb_previous_attack
+    );
+    return { userNextDay, attackResult };
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 module.exports = {

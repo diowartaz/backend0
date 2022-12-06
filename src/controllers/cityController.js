@@ -17,21 +17,21 @@ exports.new = (req, res, next) => {
 
   User.findOne({ _id: id })
     .then((user) => {
-      if (user.game && user.game.city) {
+      if (user.player && user.player.city) {
         res.status(400).json({
           error: "City already in progress",
         });
       } else {
-        if (!user.game) {
-          user.game = {
+        if (!user.player) {
+          user.player = {
             xp: 0,
             city: null,
           };
         }
-        user.game.city = { ...defaultValues.newCity };
+        user.player.city = { ...defaultValues.newCity };
         User.updateOne({ _id: id }, user)
           .then((updateOneResult) => {
-            res.status(200).json({ game: user.game });
+            res.status(200).json({ player: user.player });
           })
           .catch((error) => {
             res.status(400).json({
@@ -57,13 +57,13 @@ exports.delete = (req, res, next) => {
 
   User.findOne({ _id: id })
     .then((user) => {
-      if (user.game && user.game.city) {
-        if (!user.game) {
-          user.game = {
+      if (user.player && user.player.city) {
+        if (!user.player) {
+          user.player = {
             xp: 0,
           };
         }
-        user.game.city = null;
+        user.player.city = null;
         User.updateOne({ _id: id }, user)
           .then((updateOneResult) => {
             res.status(200).json({ message: "Your city was deleted" });
@@ -104,10 +104,10 @@ exports.findItem = (req, res, next) => {
     User.findOne({ _id: getUserIdFromJWTRes.id })
       .then((user) => {
         //calculer le temps de fouille
-        let find_items_time = defaultValues.find_item_time * req.params.nb;
+        let find_items_time = defaultValues.digging_time * req.params.nb;
         //si le temps de fouille depasse la fin de la journée alors return error
         if (
-          find_items_time + user.game.city.time >
+          find_items_time + user.player.city.time >
           defaultValues.day_end_time
         ) {
           return res.status(400).json({
@@ -117,17 +117,17 @@ exports.findItem = (req, res, next) => {
         } else {
           //generer la liste des items trouvés
           let items_found_inventory = utils.randomInventory(req.params.nb);
-          //ajout cette liste à user.game.city.inventory
-          user.game.city.inventory = utils.combineInventories(
-            user.game.city.inventory,
+          //ajout cette liste à user.player.city.inventory
+          user.player.city.inventory = utils.combineInventories(
+            user.player.city.inventory,
             items_found_inventory
           );
-          user.game.city.time += find_items_time;
+          user.player.city.time += find_items_time;
           //update le user
           User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
             .then((updateOneResult) => {
               res.status(200).json({
-                city: user.game.city,
+                city: user.player.city,
                 items_found_inventory,
               });
             })
@@ -160,11 +160,21 @@ exports.waitForTheAttack = (req, res, next) => {
 
   User.findOne({ _id: getUserIdFromJWTRes.id })
     .then((user) => {
-      user = utils.nextDay(user._doc);
+      if (!user.player.city) {
+        return res.status(400).json({
+          error: "No city in progress",
+        });
+      }
+      console.log("utils.nextDay");
+      let { userNextDay, attackResult } = utils.nextDay(user._doc);
       //update le user
-      User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
+      User.updateOne({ _id: getUserIdFromJWTRes.id }, userNextDay)
         .then((updateOneResult) => {
-          res.status(200).json({ city: user.game.city, xp: user.game.xp });
+          // res.status(200).json({ city: user.player.city, xp: user.player.data.xp });
+          res.status(200).json({
+            attackResult,
+            player: userNextDay.player,
+          });
         })
         .catch((error) => {
           res.status(400).json({
@@ -196,9 +206,9 @@ exports.build = (req, res, next) => {
     User.findOne({ _id: getUserIdFromJWTRes.id })
       .then((user) => {
         let buildId = req.params.id;
-        //check if the building id is in the user.game.city.buildings
+        //check if the building id is in the user.player.city.buildings
         let buildingUserWantToBuild = null;
-        for (const building of user.game.city.buildings) {
+        for (const building of user.player.city.buildings) {
           if (building.id == buildId) {
             buildingUserWantToBuild = building;
             break;
@@ -219,8 +229,8 @@ exports.build = (req, res, next) => {
 
         //check if user has time to build
         if (
-          buildingUserWantToBuild.time * user.game.city.speeds.build +
-            user.game.city.time >
+          buildingUserWantToBuild.time * user.player.city.speeds.build +
+            user.player.city.time >
           defaultValues.day_end_time
         ) {
           return res.status(400).json({
@@ -228,10 +238,10 @@ exports.build = (req, res, next) => {
           });
         }
 
-        //check if user.game.city.inventory has the item
+        //check if user.player.city.inventory has the item
         if (
           !utils.contains(
-            user.game.city.inventory,
+            user.player.city.inventory,
             buildingUserWantToBuild.inventory
           )
         ) {
@@ -243,23 +253,23 @@ exports.build = (req, res, next) => {
         //build lvl++
         buildingUserWantToBuild.lvl++;
 
-        //we substract the building ressources to user.game.city.inventory
+        //we substract the building ressources to user.player.city.inventory
         utils.minus(
-          user.game.city.inventory,
+          user.player.city.inventory,
           buildingUserWantToBuild.inventory
         );
 
-        // add time to user.game.city.time
-        user.game.city.time +=
-          buildingUserWantToBuild.time * user.game.city.speeds.build;
+        // add time to user.player.city.time
+        user.player.city.time +=
+          buildingUserWantToBuild.time * user.player.city.speeds.build;
 
-        // add defense to user.game.city.defense
-        user.game.city.defense += buildingUserWantToBuild.defense;
+        // add defense to user.player.city.defense
+        user.player.city.defense += buildingUserWantToBuild.defense;
 
         //update with the new city
         User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
           .then((updateOneResult) => {
-            res.status(200).json({ city: user.game.city });
+            res.status(200).json({ city: user.player.city });
           })
           .catch((error) => {
             res.status(400).json({

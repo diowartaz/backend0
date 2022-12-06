@@ -13,7 +13,7 @@ const { logger } = require("./src/middlewares/logger");
 const authRouter = require("./src/routes/user");
 const routesRouter = require("./src/routes/routes");
 const cityRouter = require("./src/routes/city");
-const gameRouter = require("./src/routes/game");
+const playerRouter = require("./src/routes/player");
 
 mongoose
   .connect(
@@ -31,7 +31,7 @@ app.use(logger);
 app.use("/", authRouter);
 app.use("/", routesRouter);
 app.use("/city", cityRouter);
-app.use("/game", gameRouter);
+app.use("/player", playerRouter);
 
 const specs = swaggerJsdoc(optionsSwagger);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));

@@ -2,7 +2,7 @@ const User = require("../models/user");
 const { getUserIdFromJWT } = require("../utils/utils");
 const defaultValues = require("../utils/defaultValues");
 
-exports.xp = (req, res, next) => {
+exports.data = (req, res, next) => {
   let getUserIdFromJWTRes = getUserIdFromJWT(req);
   if (getUserIdFromJWTRes.error) {
     return res.status(400).json({
@@ -12,16 +12,9 @@ exports.xp = (req, res, next) => {
 
   User.findOne({ _id: getUserIdFromJWTRes.id })
     .then((user) => {
-      if (user.game) {
-        res.status(200).json({
-          xp: user.game.xp,
-        });
-      } else {
-        res.status(400).json({
-          error: "No game has ever started: game not initialized",
-          user: user,
-        });
-      }
+      return res.status(200).json({
+        data: user.player.data,
+      });
     })
     .catch((error) => {
       res.status(400).json({
@@ -40,15 +33,9 @@ exports.city = (req, res, next) => {
 
   User.findOne({ _id: getUserIdFromJWTRes.id })
     .then((user) => {
-      if (user.game) {
-        res.status(200).json({
-          city: user.game.city,
-        });
-      } else {
-        res.status(400).json({
-          error: "No game has ever started",
-        });
-      }
+      return res.status(200).json({
+        city: user.player.city,
+      });
     })
     .catch((error) => {
       res.status(400).json({
@@ -57,7 +44,7 @@ exports.city = (req, res, next) => {
     });
 };
 
-exports.game = (req, res, next) => {
+exports.player = (req, res, next) => {
   let getUserIdFromJWTRes = getUserIdFromJWT(req);
   if (getUserIdFromJWTRes.error) {
     return res.status(400).json({
@@ -67,16 +54,10 @@ exports.game = (req, res, next) => {
 
   User.findOne({ _id: getUserIdFromJWTRes.id })
     .then((user) => {
-      if (user.game) {
-        res.status(200).json({
-          game: user.game,
-          default_values: defaultValues,
-        });
-      } else {
-        res.status(400).json({
-          error: "No game has ever started",
-        });
-      }
+      return res.status(200).json({
+        player: user.player,
+        default_values: defaultValues,
+      });
     })
     .catch((error) => {
       res.status(400).json({
