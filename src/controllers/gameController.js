@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const { getUserIdFromJWT } = require("../utils/utils");
+const defaultValues = require("../utils/defaultValues");
 
 exports.xp = (req, res, next) => {
   let getUserIdFromJWTRes = getUserIdFromJWT(req);
@@ -42,6 +43,34 @@ exports.city = (req, res, next) => {
       if (user.game) {
         res.status(200).json({
           city: user.game.city,
+        });
+      } else {
+        res.status(400).json({
+          error: "No game has ever started",
+        });
+      }
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: error,
+      });
+    });
+};
+
+exports.game = (req, res, next) => {
+  let getUserIdFromJWTRes = getUserIdFromJWT(req);
+  if (getUserIdFromJWTRes.error) {
+    return res.status(400).json({
+      error: getUserIdFromJWTRes.error,
+    });
+  }
+
+  User.findOne({ _id: getUserIdFromJWTRes.id })
+    .then((user) => {
+      if (user.game) {
+        res.status(200).json({
+          game: user.game,
+          default_values: defaultValues,
         });
       } else {
         res.status(400).json({
