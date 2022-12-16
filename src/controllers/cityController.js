@@ -4,7 +4,7 @@ const defaultValues = require("../utils/defaultValues");
 const utils = require("../utils/utils");
 const {
   findItemValidation,
-  buildValidation,
+  idValidation,
 } = require("../validation/cityValidators");
 
 exports.new = (req, res, next) => {
@@ -104,7 +104,10 @@ exports.findItem = (req, res, next) => {
     User.findOne({ _id: getUserIdFromJWTRes.id })
       .then((user) => {
         //calculer le temps de fouille
-        let find_items_time = defaultValues.digging_time * req.params.nb;
+        let find_items_time =
+          defaultValues.digging_time *
+          req.params.nb *
+          user.player.city.speeds.dig;
         //si le temps de fouille depasse la fin de la journée alors return error
         if (
           find_items_time + user.player.city.time >
@@ -188,6 +191,7 @@ exports.waitForTheAttack = (req, res, next) => {
       });
     });
 };
+
 exports.build = (req, res, next) => {
   try {
     let getUserIdFromJWTRes = getUserIdFromJWT(req);
@@ -196,32 +200,32 @@ exports.build = (req, res, next) => {
         error: getUserIdFromJWTRes.error,
       });
     }
-    let buildValidationRes = buildValidation(req.params);
-    if (buildValidationRes.error) {
+    let idValidationRes = idValidation(req.params);
+    if (idValidationRes.error) {
       return res
         .status(400)
-        .json({ error: buildValidationRes.error.details[0].message });
+        .json({ error: idValidationRes.error.details[0].message });
     }
 
     User.findOne({ _id: getUserIdFromJWTRes.id })
       .then((user) => {
         let buildId = req.params.id;
         //check if the building id is in the user.player.city.buildings
-        let buildingUserWantToBuild = null;
+        let buildingUserWantsToBuild = null;
         for (const building of user.player.city.buildings) {
           if (building.id == buildId) {
-            buildingUserWantToBuild = building;
+            buildingUserWantsToBuild = building;
             break;
           }
         }
-        if (!buildingUserWantToBuild) {
+        if (!buildingUserWantsToBuild) {
           return res
             .status(400)
             .json({ error: "Building " + buildId + " not available" });
         }
 
         //check if building is not max-level
-        if (buildingUserWantToBuild.lvl == buildingUserWantToBuild.lvl_max) {
+        if (buildingUserWantsToBuild.lvl == buildingUserWantsToBuild.lvl_max) {
           return res.status(400).json({
             error: "Building " + buildId + " is alrealdy at its max level",
           });
@@ -229,7 +233,7 @@ exports.build = (req, res, next) => {
 
         //check if user has time to build
         if (
-          buildingUserWantToBuild.time * user.player.city.speeds.build +
+          buildingUserWantsToBuild.time * user.player.city.speeds.build +
             user.player.city.time >
           defaultValues.day_end_time
         ) {
@@ -242,7 +246,7 @@ exports.build = (req, res, next) => {
         if (
           !utils.contains(
             user.player.city.inventory,
-            buildingUserWantToBuild.inventory
+            buildingUserWantsToBuild.inventory
           )
         ) {
           return res.status(400).json({
@@ -251,20 +255,20 @@ exports.build = (req, res, next) => {
         }
 
         //build lvl++
-        buildingUserWantToBuild.lvl++;
+        buildingUserWantsToBuild.lvl++;
 
         //we substract the building ressources to user.player.city.inventory
         utils.minus(
           user.player.city.inventory,
-          buildingUserWantToBuild.inventory
+          buildingUserWantsToBuild.inventory
         );
 
         // add time to user.player.city.time
         user.player.city.time +=
-          buildingUserWantToBuild.time * user.player.city.speeds.build;
+          buildingUserWantsToBuild.time * user.player.city.speeds.build;
 
         // add defense to user.player.city.defense
-        user.player.city.defense += buildingUserWantToBuild.defense;
+        user.player.city.defense += buildingUserWantsToBuild.defense;
 
         //update with the new city
         User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
@@ -304,4 +308,87 @@ exports.getDefaultValues = (req, res, next) => {
         error: error,
       });
     });
+};
+
+exports.learn = (req, res, next) => {
+  try {
+    let getUserIdFromJWTRes = getUserIdFromJWT(req);
+    if (getUserIdFromJWTRes.error) {
+      return res.status(400).json({
+        error: getUserIdFromJWTRes.error,
+      });
+    }
+    let idValidationRes = idValidation(req.params);
+    if (idValidationRes.error) {
+      return res
+        .status(400)
+        .json({ error: idValidationRes.error.details[0].message });
+    }
+
+    User.findOne({ _id: getUserIdFromJWTRes.id })
+      .then((user) => {
+        let skillId = req.params.id;
+        //check if the skill id is in the user.player.city.skills
+        let skillUserWantsToLearn = null;
+        for (const skill of user.player.city.skills) {
+          if (skill.id == skillId) {
+            skillUserWantsToLearn = skill;
+            break;
+          }
+        }
+        if (!skillUserWantsToLearn) {
+          return res
+            .status(400)
+            .json({ error: "Skill " + skillId + " not available" });
+        }
+
+        //check if building is not max-level
+        if (skillUserWantsToLearn.lvl == skillUserWantsToLearn.lvl_max) {
+          return res.status(400).json({
+            error: "Skill " + skillId + " is alrealdy at its max level",
+          });
+        }
+
+        //check if user has time to skill
+        if (
+          skillUserWantsToLearn.time * user.player.city.speeds.learn +
+            user.player.city.time >
+          defaultValues.day_end_time
+        ) {
+          return res.status(400).json({
+            error: "Skill " + skillId + " not enought time to learn",
+          });
+        }
+
+        //skill lvl++
+        skillUserWantsToLearn.lvl++;
+
+        // add time to user.player.city.time
+        user.player.city.time +=
+          skillUserWantsToLearn.time * user.player.city.speeds.learn;
+
+        // modify player speeds
+        user.player.city.speeds[skillUserWantsToLearn.speed_name] =
+          user.player.city.speeds[skillUserWantsToLearn.speed_name] -
+          skillUserWantsToLearn.avantage_per_lvl;
+
+        //update with the new city
+        User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
+          .then((updateOneResult) => {
+            res.status(200).json({ city: user.player.city });
+          })
+          .catch((error) => {
+            res.status(400).json({
+              error: error,
+            });
+          });
+      })
+      .catch((error) => {
+        res.status(400).json({
+          error: error,
+        });
+      });
+  } catch (e) {
+    console.log(e);
+  }
 };

@@ -7,11 +7,11 @@ function findItemValidation(params) {
   return findItemSchema.validate(params);
 }
 
-function buildValidation(params) {
-  const buildSchema = joi.object({
+function idValidation(params) {
+  const idSchema = joi.object({
     id: joi.number().positive(),
   });
-  return buildSchema.validate(params);
+  return idSchema.validate(params);
 }
 
-module.exports = { findItemValidation, buildValidation };
+module.exports = { findItemValidation, idValidation };

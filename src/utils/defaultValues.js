@@ -65,13 +65,56 @@ const barricade = {
   },
 };
 
+const digger = {
+  id: 1,
+  name: "Digger",
+  speed_name: "dig",
+  lvl: 0,
+  lvl_max: 5,
+  time: 4 * 60 * 60,
+  avantage_per_lvl: 0.1,
+};
+
+const fast_leaner = {
+  id: 2,
+  name: "Fast Learner",
+  speed_name: "learn",
+  lvl: 0,
+  lvl_max: 5,
+  time: 4 * 60 * 60,
+  avantage_per_lvl: 0.1,
+};
+
+const builder = {
+  id: 3,
+  name: "Builder",
+  speed_name: "build",
+  lvl: 0,
+  lvl_max: 5,
+  time: 2 * 60 * 60,
+  avantage_per_lvl: 0.1,
+};
+
+const meditator = {
+  id: 4,
+  name: "Meditator",
+  speed_name: "meditate",
+  lvl: 0,
+  lvl_max: 5,
+  time: 4 * 60 * 60,
+  avantage_per_lvl: 0.1,
+};
+
 const buildings = [palissade, hugePit, giantWall, renforcedWall, barricade];
+const skills = [digger, fast_leaner, builder];
 
 const day_start_time = 8 * 60 * 60;
+
 const newCity = {
   day: 1,
   defense: 20,
   buildings: buildings,
+  skills: skills,
   nb_zb_history: [],
   nb_zb_previous_attack: 9,
   nb_zb_next_attack_min: 13,
@@ -82,6 +125,7 @@ const newCity = {
     build: 1,
     learn: 1,
     dig: 1,
+    meditate: 1,
   },
 };
 

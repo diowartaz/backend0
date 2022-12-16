@@ -10,5 +10,6 @@ router.post("/item/find/:nb", cityController.findItem);
 router.post("/wait", cityController.waitForTheAttack);
 router.post("/build/:id", cityController.build);
 router.get("/default-values", cityController.getDefaultValues);
+router.post("/learn/:id", cityController.learn);
 
 module.exports = router;
