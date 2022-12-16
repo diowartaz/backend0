@@ -8,7 +8,6 @@ const EVENTCODES = {
 };
 
 function onMessageHandler(message, wss, ws) {
-  console.log("onMessageHandler");
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
       var wsRes = JSON.stringify({
@@ -40,7 +39,6 @@ function eventHandler(event, wss, ws) {
   try {
     event = JSON.parse(event.toString()); //TODO
     // event = { eventCode: EventCode, data: data, JWT: JWT};
-    console.log("event", event);
     switch (event.eventCode) {
       case EVENTCODES.MESSAGE:
         onMessageHandler(event.data, wss, ws);
@@ -63,7 +61,6 @@ function connectionHandler(JWT, wss, ws) {
   User.findOne({ _id: userId })
     .then((user) => {
       ws.username = user.username;
-      console.log(ws.username);
     })
     .catch((error) => {
       ws.close();

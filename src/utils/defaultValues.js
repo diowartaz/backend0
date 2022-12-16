@@ -109,6 +109,7 @@ const buildings = [palissade, hugePit, giantWall, renforcedWall, barricade];
 const skills = [digger, fast_leaner, builder];
 
 const day_start_time = 8 * 60 * 60;
+const day_end_time = 24 * 60 * 60 + 59;
 
 const newCity = {
   day: 1,
@@ -127,14 +128,21 @@ const newCity = {
     dig: 1,
     meditate: 1,
   },
+  last_timestamp_request: null,
 };
+
+const realTimeDay = 5 * 60;
+const coef_realtime_to_ingametime = Math.floor(
+  (day_end_time - day_start_time) / realTimeDay
+); //192
 
 const defaultValues = {
   newCity,
   items,
   day_start_time,
-  day_end_time: 24 * 60 * 60 + 59,
+  day_end_time,
   digging_time: 2 * 60 * 60,
+  coef_realtime_to_ingametime,
 };
 
 module.exports = defaultValues;

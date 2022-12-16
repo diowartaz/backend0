@@ -3,7 +3,7 @@ function logger(req, res, next) {
     hour: "2-digit",
     minute: "2-digit",
   });
-  let stringLog = `[${dateString}] ${req.method} ${req.url}`
+  let stringLog = `[${dateString}] ${req.method} ${req.url}`;
   // console.log(
   //   `-----------------[${dateString}] ${req.method} ${req.url} ----------------------`
   // );
@@ -13,7 +13,7 @@ function logger(req, res, next) {
   //   "-------------------------------------- END -------------------------------------------"
   // );
 
-  console.log(stringLog, "body:", req.body, "params:", req.params, "query:", req.query)
+  console.log(stringLog); //, "body:", req.body, "params:", req.params, "query:", req.query
   next();
 }
 

@@ -22,13 +22,8 @@ exports.new = (req, res, next) => {
           error: "City already in progress",
         });
       } else {
-        if (!user.player) {
-          user.player = {
-            xp: 0,
-            city: null,
-          };
-        }
         user.player.city = { ...defaultValues.newCity };
+        user.player.city.last_timestamp_request = new Date().getTime();
         User.updateOne({ _id: id }, user)
           .then((updateOneResult) => {
             res.status(200).json({ player: user.player });
@@ -104,13 +99,19 @@ exports.findItem = (req, res, next) => {
     User.findOne({ _id: getUserIdFromJWTRes.id })
       .then((user) => {
         //calculer le temps de fouille
-        let find_items_time =
+        let timeRequiredToFindItems =
           defaultValues.digging_time *
-          req.params.nb *
-          user.player.city.speeds.dig;
+            req.params.nb *
+            user.player.city.speeds.dig +
+          Math.floor(
+            ((new Date().getTime() - user.player.city.last_timestamp_request) *
+              defaultValues.coef_realtime_to_ingametime) /
+              1000
+          );
+
         //si le temps de fouille depasse la fin de la journée alors return error
         if (
-          find_items_time + user.player.city.time >
+          timeRequiredToFindItems + user.player.city.time >
           defaultValues.day_end_time
         ) {
           return res.status(400).json({
@@ -125,8 +126,9 @@ exports.findItem = (req, res, next) => {
             user.player.city.inventory,
             items_found_inventory
           );
-          user.player.city.time += find_items_time;
+          user.player.city.time += timeRequiredToFindItems;
           //update le user
+          user.player.city.last_timestamp_request = new Date().getTime();
           User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
             .then((updateOneResult) => {
               res.status(200).json({
@@ -168,9 +170,9 @@ exports.waitForTheAttack = (req, res, next) => {
           error: "No city in progress",
         });
       }
-      console.log("utils.nextDay");
       let { userNextDay, attackResult } = utils.nextDay(user._doc);
       //update le user
+      user.player.city.last_timestamp_request = new Date().getTime();
       User.updateOne({ _id: getUserIdFromJWTRes.id }, userNextDay)
         .then((updateOneResult) => {
           // res.status(200).json({ city: user.player.city, xp: user.player.data.xp });
@@ -230,11 +232,16 @@ exports.build = (req, res, next) => {
             error: "Building " + buildId + " is alrealdy at its max level",
           });
         }
-
+        let timeRequiredToBuild =
+          buildingUserWantsToBuild.time * user.player.city.speeds.build +
+          Math.floor(
+            ((new Date().getTime() - user.player.city.last_timestamp_request) *
+              defaultValues.coef_realtime_to_ingametime) /
+              1000
+          );
         //check if user has time to build
         if (
-          buildingUserWantsToBuild.time * user.player.city.speeds.build +
-            user.player.city.time >
+          timeRequiredToBuild + user.player.city.time >
           defaultValues.day_end_time
         ) {
           return res.status(400).json({
@@ -264,13 +271,13 @@ exports.build = (req, res, next) => {
         );
 
         // add time to user.player.city.time
-        user.player.city.time +=
-          buildingUserWantsToBuild.time * user.player.city.speeds.build;
+        user.player.city.time += timeRequiredToBuild;
 
         // add defense to user.player.city.defense
         user.player.city.defense += buildingUserWantsToBuild.defense;
 
         //update with the new city
+        user.player.city.last_timestamp_request = new Date().getTime();
         User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
           .then((updateOneResult) => {
             res.status(200).json({ city: user.player.city });
@@ -349,10 +356,16 @@ exports.learn = (req, res, next) => {
           });
         }
 
+        let timeRequiredToLearn =
+          skillUserWantsToLearn.time * user.player.city.speeds.learn +
+          Math.floor(
+            ((new Date().getTime() - user.player.city.last_timestamp_request) *
+              defaultValues.coef_realtime_to_ingametime) /
+              1000
+          );
         //check if user has time to skill
         if (
-          skillUserWantsToLearn.time * user.player.city.speeds.learn +
-            user.player.city.time >
+          timeRequiredToLearn + user.player.city.time >
           defaultValues.day_end_time
         ) {
           return res.status(400).json({
@@ -364,8 +377,7 @@ exports.learn = (req, res, next) => {
         skillUserWantsToLearn.lvl++;
 
         // add time to user.player.city.time
-        user.player.city.time +=
-          skillUserWantsToLearn.time * user.player.city.speeds.learn;
+        user.player.city.time += timeRequiredToLearn;
 
         // modify player speeds
         user.player.city.speeds[skillUserWantsToLearn.speed_name] =
@@ -373,6 +385,7 @@ exports.learn = (req, res, next) => {
           skillUserWantsToLearn.avantage_per_lvl;
 
         //update with the new city
+        user.player.city.last_timestamp_request = new Date().getTime();
         User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
           .then((updateOneResult) => {
             res.status(200).json({ city: user.player.city });
