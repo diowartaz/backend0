@@ -118,8 +118,8 @@ const newCity = {
   skills: skills,
   nb_zb_history: [],
   nb_zb_previous_attack: 9,
-  nb_zb_next_attack_min: 13,
-  nb_zb_next_attack_max: 17,
+  nb_zb_next_attack_min: 11,
+  nb_zb_next_attack_max: 13,
   time: day_start_time,
   inventory: { wood: 0, stone: 0, screw: 0, metal: 0, patch: 0 },
   speeds: {
@@ -130,6 +130,7 @@ const newCity = {
   },
   last_timestamp_request: null,
   state: "inProgress",
+  alive: true,
 };
 
 const realTimeDay = 5 * 60;

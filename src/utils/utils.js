@@ -91,8 +91,17 @@ function minus(inv1, inv2) {
 }
 
 function nextDay(user) {
+  // 25 33
   try {
     let userNextDay = { ...user };
+    console.log(
+      "userNextDay.player.city.nb_zb_previous_attack ",
+      userNextDay.player.city.nb_zb_previous_attack
+    );
+    console.log(
+      userNextDay.player.city.day * 2,
+      userNextDay.player.city.day * 4
+    );
     let attackRecap = {
       nb_zb:
         userNextDay.player.city.nb_zb_previous_attack +
@@ -110,6 +119,7 @@ function nextDay(user) {
     if (userNextDay.player.city.defense < attackRecap.nb_zb) {
       //user is dead
       attackRecap.alive = false;
+      userNextDay.player.city.alive = false;
       //add xp
       attackRecap.player_xp = 0;
       for (const nb_zb of userNextDay.player.city.nb_zb_history) {
@@ -143,8 +153,13 @@ function nextDay(user) {
       } else {
         userNextDay.player.data.personal_best_day = userNextDay.player.city.day;
       }
-      userNextDay.player.city = null;
-      return { userNextDay, attackRecap };
+      // userNextDay.player.city = null;
+      // return { userNextDay };
+    } else {
+      //update nb_zb_history
+      userNextDay.player.city.nb_zb_history.push(
+        userNextDay.player.city.nb_zb_previous_attack
+      );
     }
     //update day
     userNextDay.player.city.day += 1;
@@ -155,19 +170,14 @@ function nextDay(user) {
 
     userNextDay.player.city.nb_zb_next_attack_min =
       userNextDay.player.city.nb_zb_previous_attack +
-      (userNextDay.player.city.day + 1) * 2;
+      userNextDay.player.city.day * 2;
     userNextDay.player.city.nb_zb_next_attack_max =
       userNextDay.player.city.nb_zb_previous_attack +
-      (userNextDay.player.city.day + 1) * 4;
-
-    //update nb_zb_history
-    userNextDay.player.city.nb_zb_history.push(
-      userNextDay.player.city.nb_zb_previous_attack
-    );
+      userNextDay.player.city.day * 4;
 
     userNextDay.player.city.state = "recap";
-    userNextDay.player.city.attackRecap = attackRecap;
-    return { userNextDay, attackRecap };
+    // userNextDay.player.city.attackRecap = attackRecap;
+    return { userNextDay };
   } catch (e) {
     console.log(e);
   }

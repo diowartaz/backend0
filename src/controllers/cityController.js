@@ -103,6 +103,11 @@ exports.findItem = (req, res, next) => {
             error: "Day didn't start yet",
           });
         }
+        if (!user.player.city.alive) {
+          return res.status(400).json({
+            error: "You are dead",
+          });
+        }
         //calculer le temps de fouille
         let timeRequiredToFindItems =
           defaultValues.digging_time *
@@ -224,6 +229,11 @@ exports.build = (req, res, next) => {
         if (user.player.city.state == "recap") {
           return res.status(400).json({
             error: "Day didn't start yet",
+          });
+        }
+        if (!user.player.city.alive) {
+          return res.status(400).json({
+            error: "You are dead",
           });
         }
         let buildId = req.params.id;
@@ -359,7 +369,11 @@ exports.learn = (req, res, next) => {
             error: "Day didn't start yet",
           });
         }
-
+        if (!user.player.city.alive) {
+          return res.status(400).json({
+            error: "You are dead",
+          });
+        }
         let skillId = req.params.id;
         //check if the skill id is in the user.player.city.skills
         let skillUserWantsToLearn = null;
@@ -452,12 +466,16 @@ exports.dayEnd = (req, res, next) => {
           error: "Day didn't start yet",
         });
       }
-      let { userNextDay, attackRecap } = utils.nextDay(user._doc);
+      if (!user.player.city.alive) {
+        return res.status(400).json({
+          error: "You are dead",
+        });
+      }
+      let { userNextDay } = utils.nextDay(user._doc);
       //update le user
       User.updateOne({ _id: getUserIdFromJWTRes.id }, userNextDay)
         .then((updateOneResult) => {
           res.status(200).json({
-            attackRecap,
             player: userNextDay.player,
           });
         })
@@ -492,6 +510,11 @@ exports.dayStart = (req, res, next) => {
       if (user.player.city.state == "inProgress") {
         return res.status(400).json({
           error: "Day has alrealdy started",
+        });
+      }
+      if (!user.player.city.alive) {
+        return res.status(400).json({
+          error: "You are dead",
         });
       }
       user.player.city.state = "inProgress";
