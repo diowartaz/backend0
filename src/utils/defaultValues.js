@@ -2,6 +2,7 @@ const items = ["wood", "metal", "stone", "screw", "patch"];
 
 const palissade = {
   id: 1,
+  rarity: "common",
   name: "Palissade",
   defense: 25,
   lvl: 0,
@@ -16,6 +17,7 @@ const palissade = {
 
 const hugePit = {
   id: 2,
+  rarity: "common",
   name: "Huge pit",
   defense: 15,
   lvl: 0,
@@ -26,6 +28,7 @@ const hugePit = {
 
 const giantWall = {
   id: 3,
+  rarity: "common",
   name: "Giant wall",
   defense: 40,
   lvl: 0,
@@ -40,6 +43,7 @@ const giantWall = {
 
 const renforcedWall = {
   id: 4,
+  rarity: "rare",
   name: "Renforced wall",
   defense: 45,
   lvl: 0,
@@ -54,6 +58,7 @@ const renforcedWall = {
 
 const barricade = {
   id: 5,
+  rarity: "common",
   name: "Barricade",
   defense: 10,
   lvl: 0,
@@ -62,6 +67,146 @@ const barricade = {
   inventory: {
     wood: 2,
     metal: 1,
+  },
+};
+
+const fake_town = {
+  id: 6,
+  rarity: "epic",
+  name: "Fake town",
+  defense: 180,
+  lvl: 0,
+  lvl_max: 1,
+  time: 25 * 60 * 60,
+  inventory: {
+    wood: 5,
+    metal: 5,
+    stone: 5,
+    screw: 5,
+  },
+};
+
+const trenches = {
+  id: 7,
+  rarity: "rare",
+  name: "Trenches",
+  defense: 50,
+  lvl: 0,
+  lvl_max: 3,
+  time: 24 * 60 * 60,
+  inventory: {},
+};
+
+const random_pits = {
+  id: 8,
+  rarity: "common",
+  name: "Random Pits",
+  defense: 5,
+  lvl: 0,
+  lvl_max: 3,
+  time: 3 * 60 * 60,
+  inventory: {},
+};
+
+const bunker = {
+  id: 9,
+  rarity: "rare",
+  name: "Random Pits",
+  defense: 50,
+  lvl: 0,
+  lvl_max: 3,
+  time: 10 * 60 * 60,
+  inventory: {
+    wood: 1,
+    metal: 2,
+    stone: 2,
+  },
+};
+
+const piles_of_debris = {
+  id: 10,
+  rarity: "common",
+  name: "Piles of Debris",
+  defense: 20,
+  lvl: 0,
+  lvl_max: 3,
+  time: 3 * 60 * 60,
+  inventory: {
+    wood: 2,
+    metal: 1,
+    patch: 1,
+    screw: 1,
+  },
+};
+
+const sharpened_stakes = {
+  id: 11,
+  rarity: "rare",
+  name: "Sharpened Stakes",
+  defense: 30,
+  lvl: 0,
+  lvl_max: 3,
+  time: 6 * 60 * 60,
+  inventory: {
+    wood: 2,
+    metal: 2,
+  },
+};
+
+const reinforcing_beams = {
+  id: 12,
+  rarity: "epic",
+  name: "Reinforcing Beams",
+  defense: 20,
+  lvl: 0,
+  lvl_max: 3,
+  time: 2 * 60 * 60,
+  inventory: {
+    wood: 3,
+  },
+};
+
+const big_wall = {
+  id: 13,
+  rarity: "common",
+  name: "Big Wall",
+  defense: 35,
+  lvl: 0,
+  lvl_max: 3,
+  time: 5 * 60 * 60,
+  inventory: {
+    wood: 2,
+    metal: 2,
+    stone: 2,
+    screw: 1,
+  },
+};
+
+const zombies_grater = {
+  id: 14,
+  rarity: "epic",
+  name: "Zombies Grater",
+  defense: 60,
+  lvl: 0,
+  lvl_max: 3,
+  time: 10 * 60 * 60,
+  inventory: {
+    metal: 2,
+    screw: 3,
+    patch: 3,
+  },
+};
+
+const barbed_wires = {
+  id: 15,
+  rarity: "epic",
+  name: "Barbed Wires",
+  defense: 15,
+  lvl: 0,
+  lvl_max: 3,
+  time: 2 * 60 * 60,
+  inventory: {
+    metal: 2,
   },
 };
 
@@ -105,7 +250,29 @@ const meditator = {
   avantage_per_lvl: 0.1,
 };
 
-const buildings = [palissade, hugePit, giantWall, renforcedWall, barricade];
+const common_buildings = [
+  palissade,
+  hugePit,
+  giantWall,
+  renforcedWall,
+  barricade,
+  fake_town,
+  trenches,
+  random_pits,
+  bunker,
+  piles_of_debris,
+  sharpened_stakes,
+  reinforcing_beams,
+  big_wall,
+  zombies_grater,
+  barbed_wires,
+];
+const rare_buildings = [];
+const epic_buildings = [];
+
+const buildings = common_buildings.concat(rare_buildings).concat(epic_buildings);
+
+console.log("buildings1111", buildings)
 const skills = [digger, fast_leaner, builder];
 
 const day_start_time = 8 * 60 * 60;
@@ -114,7 +281,7 @@ const day_end_time = 24 * 60 * 60 + 59;
 const newCity = {
   day: 1,
   defense: 20,
-  buildings: buildings,
+  buildings: [],
   skills: skills,
   nb_zb_history: [],
   nb_zb_previous_attack: 9,
@@ -145,6 +312,8 @@ const defaultValues = {
   day_end_time,
   digging_time: 2 * 60 * 60,
   coef_realtime_to_ingametime,
+  nb_building_at_start: 5,
+  buildings
 };
 
 module.exports = defaultValues;

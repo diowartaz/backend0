@@ -22,7 +22,10 @@ exports.new = (req, res, next) => {
           error: "City already in progress",
         });
       } else {
-        user.player.city = { ...defaultValues.newCity };
+        user.player.city = utils.copyObject(defaultValues.newCity);
+        for (let i = 0; i < 5; i++) {
+          utils.addBuildingsCity(user.player.city, defaultValues.buildings);
+        }
         user.player.city.last_timestamp_request = new Date().getTime();
         User.updateOne({ _id: id }, user)
           .then((updateOneResult) => {

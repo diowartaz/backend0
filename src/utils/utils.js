@@ -183,6 +183,45 @@ function nextDay(user) {
   }
 }
 
+function addBuildingsCity(city, listBuilding) {
+  console.log("listBuilding.length", listBuilding.length);
+  let buildingsAvailable = [];
+  for (let i = 0; i < listBuilding.length; i++) {
+    let isAvailable = true;
+    for (let j = 0; j < city.buildings.length; j++) {
+      if (listBuilding[i].id == city.buildings[j].id) {
+        isAvailable = false;
+        break;
+      }
+    }
+    if (isAvailable) {
+      buildingsAvailable.push(listBuilding[i]);
+    }
+  }
+  console.log("buildingsAvailable", buildingsAvailable)
+  console.log("getRandomIntMinMax(0, buildingsAvailable.length - 1)", getRandomIntMinMax(0, buildingsAvailable.length - 1))
+  let buildingToAdd =
+    buildingsAvailable[getRandomIntMinMax(0, buildingsAvailable.length - 1)];
+  buildingToAdd.defense = randomizeInt(buildingToAdd.defense, 20);
+  console.log("buildingToAdd", buildingToAdd)
+  city.buildings.push(buildingToAdd);
+}
+
+function copyObject(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function randomizeInt(nb, percentage) {
+  let random_coef =
+    (Math.random() * percentage * 2) / 100 + (1 - percentage / 100);
+  console.log("random_coef", random_coef);
+  return Math.round(Math.max(0, nb * random_coef));
+}
+
+// for (let i = 0; i < 10; i++) {
+//   console.log(randomizeInt(100, 50));
+// }
+
 module.exports = {
   getUserIdFromJWT,
   randomInventory,
@@ -190,4 +229,6 @@ module.exports = {
   nextDay,
   contains,
   minus,
+  addBuildingsCity,
+  copyObject,
 };
