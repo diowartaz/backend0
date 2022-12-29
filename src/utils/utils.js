@@ -93,7 +93,7 @@ function minus(inv1, inv2) {
 function nextDay(user) {
   try {
     let userNextDay = { ...user };
-    let attackResult = {
+    let attackRecap = {
       nb_zb:
         userNextDay.player.city.nb_zb_previous_attack +
         getRandomIntMinMax(
@@ -107,15 +107,15 @@ function nextDay(user) {
     };
 
     //check if user is dead
-    if (userNextDay.player.city.defense < attackResult.nb_zb) {
+    if (userNextDay.player.city.defense < attackRecap.nb_zb) {
       //user is dead
-      attackResult.alive = false;
+      attackRecap.alive = false;
       //add xp
-      attackResult.player_xp = 0;
+      attackRecap.player_xp = 0;
       for (const nb_zb of userNextDay.player.city.nb_zb_history) {
-        attackResult.player_xp += nb_zb;
+        attackRecap.player_xp += nb_zb;
       }
-      userNextDay.player.data.xp += attackResult.player_xp;
+      userNextDay.player.data.xp += attackRecap.player_xp;
 
       //update reccord zombie
       if (userNextDay.player.data.personal_best_zb) {
@@ -144,14 +144,14 @@ function nextDay(user) {
         userNextDay.player.data.personal_best_day = userNextDay.player.city.day;
       }
       userNextDay.player.city = null;
-      return { userNextDay, attackResult };
+      return { userNextDay, attackRecap };
     }
     //update day
     userNextDay.player.city.day += 1;
     //update time
     userNextDay.player.city.time = defaultValues.day_start_time;
     //update nb zb
-    userNextDay.player.city.nb_zb_previous_attack = attackResult.nb_zb;
+    userNextDay.player.city.nb_zb_previous_attack = attackRecap.nb_zb;
 
     userNextDay.player.city.nb_zb_next_attack_min =
       userNextDay.player.city.nb_zb_previous_attack +
@@ -164,7 +164,10 @@ function nextDay(user) {
     userNextDay.player.city.nb_zb_history.push(
       userNextDay.player.city.nb_zb_previous_attack
     );
-    return { userNextDay, attackResult };
+
+    userNextDay.player.city.state = "recap";
+    userNextDay.player.city.attackRecap = attackRecap;
+    return { userNextDay, attackRecap };
   } catch (e) {
     console.log(e);
   }

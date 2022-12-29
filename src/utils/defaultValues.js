@@ -129,6 +129,7 @@ const newCity = {
     meditate: 1,
   },
   last_timestamp_request: null,
+  state: "inProgress",
 };
 
 const realTimeDay = 5 * 60;

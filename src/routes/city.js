@@ -11,5 +11,7 @@ router.post("/wait", cityController.waitForTheAttack);
 router.post("/build/:id", cityController.build);
 router.get("/default-values", cityController.getDefaultValues);
 router.post("/learn/:id", cityController.learn);
+router.post("/day/end", cityController.dayEnd);
+router.post("/day/start", cityController.dayStart);
 
 module.exports = router;

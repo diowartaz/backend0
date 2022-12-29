@@ -53,11 +53,6 @@ exports.delete = (req, res, next) => {
   User.findOne({ _id: id })
     .then((user) => {
       if (user.player && user.player.city) {
-        if (!user.player) {
-          user.player = {
-            xp: 0,
-          };
-        }
         user.player.city = null;
         User.updateOne({ _id: id }, user)
           .then((updateOneResult) => {
@@ -98,6 +93,16 @@ exports.findItem = (req, res, next) => {
 
     User.findOne({ _id: getUserIdFromJWTRes.id })
       .then((user) => {
+        if (!user.player.city) {
+          return res.status(400).json({
+            error: "No city in progress",
+          });
+        }
+        if (user.player.city.state == "recap") {
+          return res.status(400).json({
+            error: "Day didn't start yet",
+          });
+        }
         //calculer le temps de fouille
         let timeRequiredToFindItems =
           defaultValues.digging_time *
@@ -170,14 +175,14 @@ exports.waitForTheAttack = (req, res, next) => {
           error: "No city in progress",
         });
       }
-      let { userNextDay, attackResult } = utils.nextDay(user._doc);
+      let { userNextDay, attackRecap } = utils.nextDay(user._doc);
       //update le user
       user.player.city.last_timestamp_request = new Date().getTime();
       User.updateOne({ _id: getUserIdFromJWTRes.id }, userNextDay)
         .then((updateOneResult) => {
           // res.status(200).json({ city: user.player.city, xp: user.player.data.xp });
           res.status(200).json({
-            attackResult,
+            attackRecap,
             player: userNextDay.player,
           });
         })
@@ -211,6 +216,16 @@ exports.build = (req, res, next) => {
 
     User.findOne({ _id: getUserIdFromJWTRes.id })
       .then((user) => {
+        if (!user.player.city) {
+          return res.status(400).json({
+            error: "No city in progress",
+          });
+        }
+        if (user.player.city.state == "recap") {
+          return res.status(400).json({
+            error: "Day didn't start yet",
+          });
+        }
         let buildId = req.params.id;
         //check if the building id is in the user.player.city.buildings
         let buildingUserWantsToBuild = null;
@@ -334,6 +349,17 @@ exports.learn = (req, res, next) => {
 
     User.findOne({ _id: getUserIdFromJWTRes.id })
       .then((user) => {
+        if (!user.player.city) {
+          return res.status(400).json({
+            error: "No city in progress",
+          });
+        }
+        if (user.player.city.state == "recap") {
+          return res.status(400).json({
+            error: "Day didn't start yet",
+          });
+        }
+
         let skillId = req.params.id;
         //check if the skill id is in the user.player.city.skills
         let skillUserWantsToLearn = null;
@@ -404,4 +430,88 @@ exports.learn = (req, res, next) => {
   } catch (e) {
     console.log(e);
   }
+};
+
+exports.dayEnd = (req, res, next) => {
+  let getUserIdFromJWTRes = getUserIdFromJWT(req);
+  if (getUserIdFromJWTRes.error) {
+    return res.status(400).json({
+      error: getUserIdFromJWTRes.error,
+    });
+  }
+
+  User.findOne({ _id: getUserIdFromJWTRes.id })
+    .then((user) => {
+      if (!user.player.city) {
+        return res.status(400).json({
+          error: "No city in progress",
+        });
+      }
+      if (user.player.city.state == "recap") {
+        return res.status(400).json({
+          error: "Day didn't start yet",
+        });
+      }
+      let { userNextDay, attackRecap } = utils.nextDay(user._doc);
+      //update le user
+      User.updateOne({ _id: getUserIdFromJWTRes.id }, userNextDay)
+        .then((updateOneResult) => {
+          res.status(200).json({
+            attackRecap,
+            player: userNextDay.player,
+          });
+        })
+        .catch((error) => {
+          res.status(400).json({
+            error: error,
+          });
+        });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: error,
+      });
+    });
+};
+
+exports.dayStart = (req, res, next) => {
+  let getUserIdFromJWTRes = getUserIdFromJWT(req);
+  if (getUserIdFromJWTRes.error) {
+    return res.status(400).json({
+      error: getUserIdFromJWTRes.error,
+    });
+  }
+
+  User.findOne({ _id: getUserIdFromJWTRes.id })
+    .then((user) => {
+      if (!user.player.city) {
+        return res.status(400).json({
+          error: "No city in progress",
+        });
+      }
+      if (user.player.city.state == "inProgress") {
+        return res.status(400).json({
+          error: "Day has alrealdy started",
+        });
+      }
+      user.player.city.state = "inProgress";
+      user.player.city.last_timestamp_request = new Date().getTime();
+      //update le user
+      User.updateOne({ _id: getUserIdFromJWTRes.id }, user)
+        .then((updateOneResult) => {
+          res.status(200).json({
+            city: user.player.city,
+          });
+        })
+        .catch((error) => {
+          res.status(400).json({
+            error: error,
+          });
+        });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: error,
+      });
+    });
 };
