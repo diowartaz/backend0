@@ -210,6 +210,21 @@ const barbed_wires = {
   },
 };
 
+const architect_shelter = {
+  id: 16,
+  rarity: "base",
+  name: "Architect Shelter",
+  defense: 0,
+  lvl: 0,
+  lvl_max: 3,
+  time: 5 * 60 * 60,
+  inventory: {
+    metal: 2,
+    screw: 2,
+    patch: 2,
+  },
+};
+
 const digger = {
   id: 1,
   name: "Digger",
@@ -270,9 +285,10 @@ const common_buildings = [
 const rare_buildings = [];
 const epic_buildings = [];
 
-const buildings = common_buildings.concat(rare_buildings).concat(epic_buildings);
+const buildings = common_buildings
+  .concat(rare_buildings)
+  .concat(epic_buildings);
 
-console.log("buildings1111", buildings)
 const skills = [digger, fast_leaner, builder];
 
 const day_start_time = 8 * 60 * 60;
@@ -281,7 +297,7 @@ const day_end_time = 24 * 60 * 60 + 59;
 const newCity = {
   day: 1,
   defense: 20,
-  buildings: [],
+  buildings: [architect_shelter],
   skills: skills,
   nb_zb_history: [],
   nb_zb_previous_attack: 9,
@@ -313,7 +329,7 @@ const defaultValues = {
   digging_time: 2 * 60 * 60,
   coef_realtime_to_ingametime,
   nb_building_at_start: 5,
-  buildings
+  buildings,
 };
 
 module.exports = defaultValues;

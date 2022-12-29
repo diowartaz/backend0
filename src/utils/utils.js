@@ -94,15 +94,8 @@ function nextDay(user) {
   // 25 33
   try {
     let userNextDay = { ...user };
-    console.log(
-      "userNextDay.player.city.nb_zb_previous_attack ",
-      userNextDay.player.city.nb_zb_previous_attack
-    );
-    console.log(
-      userNextDay.player.city.day * 2,
-      userNextDay.player.city.day * 4
-    );
     let attackRecap = {
+      architect_shelter_buildings: [],
       nb_zb:
         userNextDay.player.city.nb_zb_previous_attack +
         getRandomIntMinMax(
@@ -160,6 +153,23 @@ function nextDay(user) {
       userNextDay.player.city.nb_zb_history.push(
         userNextDay.player.city.nb_zb_previous_attack
       );
+
+      let lvl_architect_shelter = 0;
+
+      if ((userNextDay.player.city.buildings[0].id = 16)) {
+        lvl_architect_shelter = userNextDay.player.city.buildings[0].lvl;
+      }
+      for (let i = 0; i < lvl_architect_shelter; i++) {
+        if (Math.random() > 0.5) {
+          let buildingAdded = addBuildingsCity(
+            userNextDay.player.city,
+            defaultValues.buildings
+          );
+          if (buildingAdded) {
+            attackRecap.architect_shelter_buildings.push(buildingAdded);
+          }
+        }
+      }
     }
     //update day
     userNextDay.player.city.day += 1;
@@ -176,7 +186,7 @@ function nextDay(user) {
       userNextDay.player.city.day * 4;
 
     userNextDay.player.city.state = "recap";
-    // userNextDay.player.city.attackRecap = attackRecap;
+    userNextDay.player.city.attackRecap = attackRecap;
     return { userNextDay };
   } catch (e) {
     console.log(e);
@@ -184,7 +194,6 @@ function nextDay(user) {
 }
 
 function addBuildingsCity(city, listBuilding) {
-  console.log("listBuilding.length", listBuilding.length);
   let buildingsAvailable = [];
   for (let i = 0; i < listBuilding.length; i++) {
     let isAvailable = true;
@@ -198,13 +207,14 @@ function addBuildingsCity(city, listBuilding) {
       buildingsAvailable.push(listBuilding[i]);
     }
   }
-  console.log("buildingsAvailable", buildingsAvailable)
-  console.log("getRandomIntMinMax(0, buildingsAvailable.length - 1)", getRandomIntMinMax(0, buildingsAvailable.length - 1))
+  if (buildingsAvailable.length == 0) {
+    return null;
+  }
   let buildingToAdd =
     buildingsAvailable[getRandomIntMinMax(0, buildingsAvailable.length - 1)];
   buildingToAdd.defense = randomizeInt(buildingToAdd.defense, 20);
-  console.log("buildingToAdd", buildingToAdd)
   city.buildings.push(buildingToAdd);
+  return buildingToAdd;
 }
 
 function copyObject(obj) {
@@ -214,13 +224,8 @@ function copyObject(obj) {
 function randomizeInt(nb, percentage) {
   let random_coef =
     (Math.random() * percentage * 2) / 100 + (1 - percentage / 100);
-  console.log("random_coef", random_coef);
   return Math.round(Math.max(0, nb * random_coef));
 }
-
-// for (let i = 0; i < 10; i++) {
-//   console.log(randomizeInt(100, 50));
-// }
 
 module.exports = {
   getUserIdFromJWT,
