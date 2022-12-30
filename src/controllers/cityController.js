@@ -8,41 +8,45 @@ const {
 } = require("../validation/cityValidators");
 
 exports.new = (req, res, next) => {
-  const { error, id } = getUserIdFromJWT(req);
-  if (error) {
-    return res.status(400).json({
-      error: error,
-    });
-  }
-
-  User.findOne({ _id: id })
-    .then((user) => {
-      if (user.player && user.player.city) {
-        res.status(400).json({
-          error: "City already in progress",
-        });
-      } else {
-        user.player.city = utils.copyObject(defaultValues.newCity);
-        for (let i = 0; i < 5; i++) {
-          utils.addBuildingsCity(user.player.city, defaultValues.buildings);
-        }
-        user.player.city.last_timestamp_request = new Date().getTime();
-        User.updateOne({ _id: id }, user)
-          .then((updateOneResult) => {
-            res.status(200).json({ player: user.player });
-          })
-          .catch((error) => {
-            res.status(400).json({
-              error: error,
-            });
-          });
-      }
-    })
-    .catch((error) => {
-      res.status(400).json({
+  try {
+    const { error, id } = getUserIdFromJWT(req);
+    if (error) {
+      return res.status(400).json({
         error: error,
       });
-    });
+    }
+
+    User.findOne({ _id: id })
+      .then((user) => {
+        if (user.player && user.player.city) {
+          res.status(400).json({
+            error: "City already in progress",
+          });
+        } else {
+          user.player.city = utils.copyObject(defaultValues.newCity);
+          for (let i = 0; i < 5; i++) {
+            utils.addBuildingsCity(user.player.city, defaultValues.buildings);
+          }
+          user.player.city.last_timestamp_request = new Date().getTime();
+          User.updateOne({ _id: id }, user)
+            .then((updateOneResult) => {
+              res.status(200).json({ player: user.player });
+            })
+            .catch((error) => {
+              res.status(400).json({
+                error: error,
+              });
+            });
+        }
+      })
+      .catch((error) => {
+        res.status(400).json({
+          error: error,
+        });
+      });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 exports.delete = (req, res, next) => {
