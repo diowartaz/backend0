@@ -213,8 +213,34 @@ function addBuildingsCity(city, listBuilding) {
   let buildingToAdd =
     buildingsAvailable[getRandomIntMinMax(0, buildingsAvailable.length - 1)];
   buildingToAdd.defense = randomizeInt(buildingToAdd.defense, 20);
+  for (let i = 0; i < city.buildings.length; i++) {
+    sort1[city.buildings[i].rarity] = i;
+  }
   city.buildings.push(buildingToAdd);
+  city.buildings.sort(compareSortBuildings);
   return buildingToAdd;
+}
+
+function compareSortBuildings(building1, building2) {
+  let comparisionCriteria = {
+    base: 0,
+    epic: 1,
+    rare: 2,
+    common: 3,
+  };
+  if (
+    comparisionCriteria[building1.rarity] <
+    comparisionCriteria[building2.rarity]
+  ) {
+    return -1;
+  }
+  if (
+    comparisionCriteria[building1.rarity] >
+    comparisionCriteria[building2.rarity]
+  ) {
+    return 1;
+  }
+  return 0;
 }
 
 function copyObject(obj) {

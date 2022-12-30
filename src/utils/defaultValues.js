@@ -111,7 +111,7 @@ const random_pits = {
 const bunker = {
   id: 9,
   rarity: "rare",
-  name: "Random Pits",
+  name: "Bunker",
   defense: 50,
   lvl: 0,
   lvl_max: 3,
@@ -304,6 +304,7 @@ const newCity = {
   nb_zb_next_attack_min: 11,
   nb_zb_next_attack_max: 13,
   time: day_start_time,
+  // inventory: { wood: 99, stone: 99, screw: 99, metal: 99, patch: 99 },
   inventory: { wood: 0, stone: 0, screw: 0, metal: 0, patch: 0 },
   speeds: {
     build: 1,
