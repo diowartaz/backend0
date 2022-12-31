@@ -27,6 +27,9 @@ exports.new = (req, res, next) => {
           for (let i = 0; i < 5; i++) {
             utils.addBuildingsCity(user.player.city, defaultValues.buildings);
           }
+          for (let i = 0; i < 6; i++) {
+            utils.addSkillLvlsCity(user.player.city);
+          }
           user.player.city.last_timestamp_request = new Date().getTime();
           User.updateOne({ _id: id }, user)
             .then((updateOneResult) => {

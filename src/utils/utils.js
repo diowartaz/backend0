@@ -96,6 +96,7 @@ function nextDay(user) {
     let userNextDay = { ...user };
     let attackRecap = {
       architect_shelter_buildings: [],
+      library_discoveries: {},
       nb_zb:
         userNextDay.player.city.nb_zb_previous_attack +
         getRandomIntMinMax(
@@ -154,6 +155,7 @@ function nextDay(user) {
         userNextDay.player.city.nb_zb_previous_attack
       );
 
+      //architect shelter
       let lvl_architect_shelter = 0;
 
       if ((userNextDay.player.city.buildings[0].id = 16)) {
@@ -170,6 +172,29 @@ function nextDay(user) {
           }
         }
       }
+
+      //library
+      let lvl_library = 0;
+
+      if ((userNextDay.player.city.buildings[1].id = 17)) {
+        lvl_library = userNextDay.player.city.buildings[1].lvl;
+      }
+      for (let i = 0; i < lvl_library; i++) {
+        if (Math.random() > 0.5) {
+          let skill = addSkillLvlsCity(userNextDay.player.city);
+          if (skill) {
+            if (attackRecap.library_discoveries[skill.id]) {
+              attackRecap.library_discoveries[skill.id]++;
+            } else {
+              attackRecap.library_discoveries[skill.id] = 1;
+            }
+          }
+        }
+      }
+      console.log(
+        "attackRecap.library_discoveries",
+        attackRecap.library_discoveries
+      );
     }
     //update day
     userNextDay.player.city.day += 1;
@@ -250,6 +275,23 @@ function randomizeInt(nb, percentage) {
   return Math.round(Math.max(0, nb * random_coef));
 }
 
+function addSkillLvlsCity(city) {
+  let skillsWhichLvlMaxCanIncrease = [];
+  for (let i = 0; i < city.skills.length; i++) {
+    if (city.skills[i].lvl_max != city.skills[i].lvl_max_max) {
+      skillsWhichLvlMaxCanIncrease.push(city.skills[i]);
+    }
+  }
+  console.log("skillsWhichLvlMaxCanIncrease", skillsWhichLvlMaxCanIncrease);
+  let chosenSkill =
+    skillsWhichLvlMaxCanIncrease[
+      getRandomIntMinMax(0, skillsWhichLvlMaxCanIncrease.length - 1)
+    ];
+  chosenSkill.lvl_max++;
+  console.log("chosenSkill", chosenSkill);
+  return chosenSkill;
+}
+
 module.exports = {
   getUserIdFromJWT,
   randomInventory,
@@ -259,4 +301,5 @@ module.exports = {
   minus,
   addBuildingsCity,
   copyObject,
+  addSkillLvlsCity,
 };
