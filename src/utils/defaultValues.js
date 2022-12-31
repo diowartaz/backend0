@@ -308,6 +308,50 @@ const buildings = common_buildings
   .concat(rare_buildings)
   .concat(epic_buildings);
 
+function createTotalInventory(buildings) {
+  let inv = {
+    wood: 0,
+    metal: 0,
+    stone: 0,
+    screw: 0,
+    patch: 0,
+  };
+  for (const building of buildings) {
+    for (const key in building.inventory) {
+      inv[key] += building.inventory[key] * (building.lvl_max - 1);
+    }
+  }
+  return inv;
+}
+
+function create_list_leveled_proba(total_inventory) {
+  let list_leveled_proba = [];
+  let previous_key = null;
+  for (const key in total_inventory) {
+    if (list_leveled_proba.length == 0) {
+      let obj = {
+        object: key,
+        nb: total_inventory[key],
+      };
+      list_leveled_proba.push(obj);
+    } else {
+      let obj = {
+        object: key,
+        nb:
+          total_inventory[key] +
+          list_leveled_proba[list_leveled_proba.length - 1].nb,
+      };
+      list_leveled_proba.push(obj);
+    }
+    previous_key = key;
+  }
+
+  return list_leveled_proba;
+}
+
+const total_inventory = createTotalInventory(buildings);
+const list_leveled_proba = create_list_leveled_proba(total_inventory);
+
 const skills = [digger, fast_leaner, builder];
 
 const day_start_time = 8 * 60 * 60;
@@ -350,6 +394,7 @@ const defaultValues = {
   coef_realtime_to_ingametime,
   nb_building_at_start: 5,
   buildings,
+  list_leveled_proba,
 };
 
 module.exports = defaultValues;

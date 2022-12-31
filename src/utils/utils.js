@@ -10,7 +10,16 @@ function getRandomIntMinMax(min, max) {
 }
 
 function getRandomItem() {
-  return defaultValues.items[getRandomInt(defaultValues.items.length)];
+  let maxInt =
+    defaultValues.list_leveled_proba[
+      defaultValues.list_leveled_proba.length - 1
+    ].nb;
+  let randomInt = getRandomIntMinMax(1, maxInt);
+  let index = 0;
+  while (randomInt > defaultValues.list_leveled_proba[index].nb) {
+    index++;
+  }
+  return defaultValues.list_leveled_proba[index].object;
 }
 
 function getUserIdFromJWT(req) {
@@ -191,10 +200,6 @@ function nextDay(user) {
           }
         }
       }
-      console.log(
-        "attackRecap.library_discoveries",
-        attackRecap.library_discoveries
-      );
     }
     //update day
     userNextDay.player.city.day += 1;
@@ -282,13 +287,11 @@ function addSkillLvlsCity(city) {
       skillsWhichLvlMaxCanIncrease.push(city.skills[i]);
     }
   }
-  console.log("skillsWhichLvlMaxCanIncrease", skillsWhichLvlMaxCanIncrease);
   let chosenSkill =
     skillsWhichLvlMaxCanIncrease[
       getRandomIntMinMax(0, skillsWhichLvlMaxCanIncrease.length - 1)
     ];
   chosenSkill.lvl_max++;
-  console.log("chosenSkill", chosenSkill);
   return chosenSkill;
 }
 
