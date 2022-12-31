@@ -323,8 +323,8 @@ const newCity = {
   nb_zb_next_attack_min: 11,
   nb_zb_next_attack_max: 13,
   time: day_start_time,
-  inventory: { wood: 50, stone: 50, screw: 50, metal: 50, patch: 50 },
-  // inventory: { wood: 0, stone: 0, screw: 0, metal: 0, patch: 0 },
+  // inventory: { wood: 50, stone: 50, screw: 50, metal: 50, patch: 50 },
+  inventory: { wood: 0, stone: 0, screw: 0, metal: 0, patch: 0 },
   speeds: {
     build: 1,
     learn: 1,
