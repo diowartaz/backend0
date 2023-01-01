@@ -287,12 +287,16 @@ function addSkillLvlsCity(city) {
       skillsWhichLvlMaxCanIncrease.push(city.skills[i]);
     }
   }
-  let chosenSkill =
-    skillsWhichLvlMaxCanIncrease[
-      getRandomIntMinMax(0, skillsWhichLvlMaxCanIncrease.length - 1)
-    ];
-  chosenSkill.lvl_max++;
-  return chosenSkill;
+  if (skillsWhichLvlMaxCanIncrease.length == 0) {
+    return null;
+  } else {
+    let chosenSkill =
+      skillsWhichLvlMaxCanIncrease[
+        getRandomIntMinMax(0, skillsWhichLvlMaxCanIncrease.length - 1)
+      ];
+    chosenSkill.lvl_max++;
+    return chosenSkill;
+  }
 }
 
 module.exports = {

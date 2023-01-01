@@ -24,7 +24,7 @@ exports.new = (req, res, next) => {
           });
         } else {
           user.player.city = utils.copyObject(defaultValues.newCity);
-          for (let i = 0; i < 5; i++) {
+          for (let i = 0; i < 20; i++) {
             utils.addBuildingsCity(user.player.city, defaultValues.buildings);
           }
           for (let i = 0; i < 6; i++) {
