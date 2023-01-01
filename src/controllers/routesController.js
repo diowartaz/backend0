@@ -1,16 +1,21 @@
 const User = require("../models/user");
 const { getUserIdFromJWT } = require("../utils/utils");
 
-exports.getLeaderboard = (req, res, next) => {
+exports.getLeaderboardBestDay = (req, res, next) => {
   let leaderboard = [];
   User.find()
-    .sort({ xp: -1 })
+    .sort({
+      "player.data.personal_best_day": -1,
+      "player.data.personal_best_zb": -1,
+    })
     .limit(10)
     .then((users) => {
       for (let i = 0; i < users.length; i++) {
         leaderboard.push({
           username: users[i].username,
-          xp: users[i].xp,
+          user_id: users[i]._id,
+          personal_best_day: users[i].player.data.personal_best_day,
+          personal_best_zb: users[i].player.data.personal_best_zb,
           rank: i + 1,
         });
       }

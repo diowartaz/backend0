@@ -156,6 +156,23 @@ function nextDay(user) {
       } else {
         userNextDay.player.data.personal_best_day = userNextDay.player.city.day;
       }
+
+      let game_sumary = {
+        date: new Date(),
+        zb: userNextDay.player.city.nb_zb_previous_attack,
+        day: userNextDay.player.city.day,
+        defense: userNextDay.player.city.defense,
+      };
+      //update user.player.last_10_games
+      if (userNextDay.player.last_10_games) {
+        if (userNextDay.player.last_10_games.length == 10) {
+          userNextDay.player.last_10_games =
+            userNextDay.player.last_10_games.slice(1);
+        }
+        userNextDay.player.last_10_games.push(game_sumary);
+      } else {
+        userNextDay.player.last_10_games = [game_sumary];
+      }
       // userNextDay.player.city = null;
       // return { userNextDay };
     } else {

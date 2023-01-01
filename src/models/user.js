@@ -20,6 +20,7 @@ const userSchema = mongoose.Schema({
     type: Object({}),
     default: {
       data: { xp: 0, personal_best_day: 0, personal_best_zb: 0 },
+      last_10_games: [],
       city: null,
     },
   },
