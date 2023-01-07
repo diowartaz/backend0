@@ -188,7 +188,7 @@ function nextDay(user) {
         lvl_architect_shelter = userNextDay.player.city.buildings[0].lvl;
       }
       for (let i = 0; i < lvl_architect_shelter; i++) {
-        if (Math.random() > 0.5) {
+        if (Math.random() > 0.7) {
           let buildingAdded = addBuildingsCity(
             userNextDay.player.city,
             defaultValues.buildings

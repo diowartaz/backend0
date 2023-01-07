@@ -220,8 +220,8 @@ const architect_shelter = {
   time: 5 * 60 * 60,
   inventory: {
     metal: 2,
-    screw: 2,
-    patch: 2,
+    wood: 2,
+    stone: 2,
   },
 };
 
@@ -234,9 +234,9 @@ const library = {
   lvl_max: 3,
   time: 5 * 60 * 60,
   inventory: {
+    metal: 2,
+    wood: 2,
     stone: 2,
-    screw: 2,
-    patch: 2,
   },
 };
 

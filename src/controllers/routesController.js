@@ -50,3 +50,41 @@ exports.userXP = (req, res, next) => {
       });
     });
 };
+exports.getProfil = (req, res, next) => {
+  try {
+    console.log("getProfil,", req.params.id);
+
+    User.find()
+      .sort({
+        "player.data.personal_best_day": -1,
+        "player.data.personal_best_zb": -1,
+      })
+      .then((users) => {
+        console.log("users", users);
+        for (let i = 0; i < users.length; i++) {
+          if (users[i]._id == req.params.id) {
+            let profil = {
+              username: users[i].username,
+              rank: i + 1,
+              xp: users[i].player.data.xp,
+              creation_date: users[i].creation_date,
+              personal_best_day: users[i].player.data.personal_best_day,
+              personal_best_zb: users[i].player.data.personal_best_zb,
+              last_10_games: users[i].player.last_10_games,
+            };
+            return res.status(200).json({ profil });
+          }
+        }
+        return res.status(400).json({ error: "not found" });
+      })
+      .catch((error) => {
+        res.status(400).json({
+          error: error,
+        });
+      });
+  } catch (e) {
+    res.status(400).json({
+      error: e,
+    });
+  }
+};
