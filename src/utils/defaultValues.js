@@ -310,9 +310,9 @@ const buildings = common_buildings
 
 function createTotalInventory(buildings) {
   let inv = {
-    wood: 0,
-    metal: 0,
-    stone: 0,
+    wood: 12,
+    metal: 12,
+    stone: 12,
     screw: 0,
     patch: 0,
   };
@@ -351,6 +351,10 @@ function create_list_leveled_proba(total_inventory) {
 
 const total_inventory = createTotalInventory(buildings);
 const list_leveled_proba = create_list_leveled_proba(total_inventory);
+console.log(total_inventory);
+console.log(list_leveled_proba);
+
+
 
 const skills = [digger, fast_leaner, builder];
 
