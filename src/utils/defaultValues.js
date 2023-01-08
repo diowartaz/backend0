@@ -228,7 +228,7 @@ const architect_shelter = {
 const library = {
   id: 17,
   rarity: "base",
-  name: "library",
+  name: "Library",
   defense: 0,
   lvl: 0,
   lvl_max: 3,
@@ -243,7 +243,7 @@ const library = {
 const metal = {
   id: 18,
   rarity: "epic",
-  name: "metal",
+  name: "Renforced metal",
   defense: 40,
   lvl: 0,
   lvl_max: 2,
@@ -256,7 +256,7 @@ const metal = {
 const wood = {
   id: 19,
   rarity: "epic",
-  name: "wood",
+  name: "Renforced wood",
   defense: 40,
   lvl: 0,
   lvl_max: 2,
@@ -269,7 +269,7 @@ const wood = {
 const stone = {
   id: 20,
   rarity: "epic",
-  name: "stone",
+  name: "Renforced stone",
   defense: 40,
   lvl: 0,
   lvl_max: 2,
@@ -282,7 +282,7 @@ const stone = {
 const screw = {
   id: 21,
   rarity: "epic",
-  name: "screw",
+  name: "Renforced screw",
   defense: 40,
   lvl: 0,
   lvl_max: 2,
@@ -295,13 +295,79 @@ const screw = {
 const patch = {
   id: 22,
   rarity: "epic",
-  name: "patch",
+  name: "Renforced patch",
   defense: 60,
   lvl: 0,
   lvl_max: 2,
   time: 4 * 60 * 60,
   inventory: {
     patch: 6,
+  },
+};
+
+//
+const quick_metal = {
+  id: 23,
+  rarity: "common",
+  name: "Quick metal",
+  defense: 4,
+  lvl: 0,
+  lvl_max: 8,
+  time: 1 * 60 * 60,
+  inventory: {
+    metal: 1,
+  },
+};
+
+const quick_wood = {
+  id: 24,
+  rarity: "common",
+  name: "Quick wood",
+  defense: 4,
+  lvl: 0,
+  lvl_max: 8,
+  time: 1 * 60 * 60,
+  inventory: {
+    wood: 1,
+  },
+};
+
+const quick_stone = {
+  id: 25,
+  rarity: "common",
+  name: "Quick stone",
+  defense: 4,
+  lvl: 0,
+  lvl_max: 8,
+  time: 1 * 60 * 60,
+  inventory: {
+    stone: 1,
+  },
+};
+
+const quick_screw = {
+  id: 25,
+  rarity: "common",
+  name: "Quick screw",
+  defense: 4,
+  lvl: 0,
+  lvl_max: 8,
+  time: 1 * 60 * 60,
+  inventory: {
+    screw: 1,
+  },
+};
+
+const quick_patch = {
+  id: 25,
+  rarity: "common",
+  name: "Quick patch",
+  defense: 4,
+  lvl: 0,
+  lvl_max: 8,
+  time: 1 * 60 * 60,
+  inventory: {
+    patch: 1,
   },
 };
 
