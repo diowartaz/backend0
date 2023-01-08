@@ -351,10 +351,8 @@ function create_list_leveled_proba(total_inventory) {
 
 const total_inventory = createTotalInventory(buildings);
 const list_leveled_proba = create_list_leveled_proba(total_inventory);
-console.log(total_inventory);
-console.log(list_leveled_proba);
-
-
+// console.log(total_inventory);
+// console.log(list_leveled_proba);
 
 const skills = [digger, fast_leaner, builder];
 

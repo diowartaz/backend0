@@ -52,15 +52,12 @@ exports.userXP = (req, res, next) => {
 };
 exports.getProfil = (req, res, next) => {
   try {
-    console.log("getProfil,", req.params.id);
-
     User.find()
       .sort({
         "player.data.personal_best_day": -1,
         "player.data.personal_best_zb": -1,
       })
       .then((users) => {
-        console.log("users", users);
         for (let i = 0; i < users.length; i++) {
           if (users[i]._id == req.params.id) {
             let profil = {
