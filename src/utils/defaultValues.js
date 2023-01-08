@@ -314,7 +314,7 @@ const digger = {
   lvl: 0,
   lvl_max: 0,
   lvl_max_max: 5,
-  time: 4 * 60 * 60,
+  time: 6 * 60 * 60,
   avantage_per_lvl: 0.1,
 };
 
@@ -325,7 +325,7 @@ const fast_leaner = {
   lvl: 0,
   lvl_max: 0,
   lvl_max_max: 5,
-  time: 3 * 60 * 60,
+  time: 2 * 60 * 60,
   avantage_per_lvl: 0.1,
 };
 
@@ -336,8 +336,20 @@ const builder = {
   lvl: 0,
   lvl_max: 0,
   lvl_max_max: 5,
-  time: 2 * 60 * 60,
+  time: 3 * 60 * 60,
   avantage_per_lvl: 0.1,
+};
+
+const insomniac = {
+  id: 4,
+  name: "Insomniac",
+  speed_name: "insomniac",
+  lvl: 0,
+  lvl_max: 0,
+  lvl_max_max: 8,
+  time: 3 * 60 * 60,
+  avantage_per_lvl: 0.1,
+  reduce_time_seconds: 0.25 * 60 * 60,
 };
 
 // const meditator = {
@@ -426,7 +438,7 @@ const list_leveled_proba = create_list_leveled_proba(total_inventory);
 // console.log(total_inventory);
 // console.log(list_leveled_proba);
 
-const skills = [digger, fast_leaner, builder];
+const skills = [insomniac, digger, fast_leaner, builder];
 
 const day_start_time = 8 * 60 * 60;
 const day_end_time = 24 * 60 * 60 + 59;
@@ -447,7 +459,7 @@ const newCity = {
     build: 1,
     learn: 1,
     dig: 1,
-    meditate: 1,
+    insomniac: 1,
   },
   last_timestamp_request: null,
   state: "inProgress",

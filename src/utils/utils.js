@@ -221,7 +221,15 @@ function nextDay(user) {
     //update day
     userNextDay.player.city.day += 1;
     //update time
-    userNextDay.player.city.time = defaultValues.day_start_time;
+    let reduce_time_seconds = 0;
+    if (userNextDay.player.city.skills[0].id == 4) {
+      reduce_time_seconds =
+        userNextDay.player.city.skills[0].lvl *
+        userNextDay.player.city.skills[0].reduce_time_seconds;
+    }
+    userNextDay.player.city.time =
+      defaultValues.day_start_time - reduce_time_seconds;
+
     //update nb zb
     userNextDay.player.city.nb_zb_previous_attack = attackRecap.nb_zb;
 
