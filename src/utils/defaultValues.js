@@ -15,17 +15,6 @@ const palissade = {
   },
 };
 
-const hugePit = {
-  id: 2,
-  rarity: "common",
-  name: "Huge pit",
-  defense: 15,
-  lvl: 0,
-  lvl_max: 4,
-  time: 8 * 60 * 60,
-  inventory: {},
-};
-
 const giantWall = {
   id: 3,
   rarity: "common",
@@ -84,6 +73,17 @@ const fake_town = {
     stone: 5,
     screw: 5,
   },
+};
+
+const hugePit = {
+  id: 2,
+  rarity: "common",
+  name: "Huge pit",
+  defense: 15,
+  lvl: 0,
+  lvl_max: 4,
+  time: 8 * 60 * 60,
+  inventory: {},
 };
 
 const trenches = {
@@ -204,7 +204,7 @@ const barbed_wires = {
   defense: 15,
   lvl: 0,
   lvl_max: 3,
-  time: 2 * 60 * 60,
+  time: 2.5 * 60 * 60,
   inventory: {
     metal: 2,
   },
@@ -239,6 +239,73 @@ const library = {
     stone: 2,
   },
 };
+//////
+const metal = {
+  id: 18,
+  rarity: "epic",
+  name: "metal",
+  defense: 40,
+  lvl: 0,
+  lvl_max: 2,
+  time: 4 * 60 * 60,
+  inventory: {
+    metal: 6,
+  },
+};
+
+const wood = {
+  id: 19,
+  rarity: "epic",
+  name: "wood",
+  defense: 40,
+  lvl: 0,
+  lvl_max: 2,
+  time: 4 * 60 * 60,
+  inventory: {
+    wood: 6,
+  },
+};
+
+const stone = {
+  id: 20,
+  rarity: "epic",
+  name: "stone",
+  defense: 40,
+  lvl: 0,
+  lvl_max: 2,
+  time: 4 * 60 * 60,
+  inventory: {
+    stone: 6,
+  },
+};
+
+const screw = {
+  id: 21,
+  rarity: "epic",
+  name: "screw",
+  defense: 40,
+  lvl: 0,
+  lvl_max: 2,
+  time: 4 * 60 * 60,
+  inventory: {
+    screw: 6,
+  },
+};
+
+const patch = {
+  id: 22,
+  rarity: "epic",
+  name: "patch",
+  defense: 60,
+  lvl: 0,
+  lvl_max: 2,
+  time: 4 * 60 * 60,
+  inventory: {
+    patch: 6,
+  },
+};
+
+////////////skills
 
 const digger = {
   id: 1,
@@ -258,7 +325,7 @@ const fast_leaner = {
   lvl: 0,
   lvl_max: 0,
   lvl_max_max: 5,
-  time: 4 * 60 * 60,
+  time: 3 * 60 * 60,
   avantage_per_lvl: 0.1,
 };
 
@@ -300,6 +367,11 @@ const common_buildings = [
   big_wall,
   zombies_grater,
   barbed_wires,
+  metal,
+  wood,
+  stone,
+  screw,
+  patch,
 ];
 const rare_buildings = [];
 const epic_buildings = [];
